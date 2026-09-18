@@ -42,6 +42,6 @@ Projeto desenvolvido por alunos do **: 2º Ano C — Curso Técnico em Informát
 | **Heloisa de França** | Líder e Design |
 | **Jean Lucas** | Pesquisa |
 | **José Gabriel** | QA e Arquitetura |
-| **Paulo Gabriel** | Documentação |
+| **Paulo Gabriell** | Documentação |
 
 **Ano:** 2026
