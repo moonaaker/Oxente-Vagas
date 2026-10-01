@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oxente Vagas — Estágios que combinam com você</title>
+<meta name="description" content="Oxente Vagas conecta estudantes e empresas para vagas de estágio em todo o Nordeste.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="#home" class="brand">
+      <svg aria-hidden="true" class="brand-mark" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="10" fill="#F4B942"/>
+        <g stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <line x1="24" y1="2" x2="24" y2="9"/>
+          <line x1="24" y1="39" x2="24" y2="46"/>
+          <line x1="2" y1="24" x2="9" y2="24"/>
+          <line x1="39" y1="24" x2="46" y2="24"/>
+          <line x1="8.5" y1="8.5" x2="13.5" y2="13.5"/>
+          <line x1="34.5" y1="34.5" x2="39.5" y2="39.5"/>
+          <line x1="8.5" y1="39.5" x2="13.5" y2="34.5"/>
+          <line x1="34.5" y1="13.5" x2="39.5" y2="8.5"/>
+        </g>
+      </svg>
+      <span class="brand-word">Oxente<span>Vagas</span></span>
+    </a>
+    <nav class="main-nav" id="menu-principal" aria-label="Principal">
+      <a href="#sobre">Sobre</a>
+      <a href="#vagas">Vagas</a>
+      <a href="#empresas">Empresas</a>
+    </nav>
+    <a href="#login" class="btn btn-sun" id="botao-login">Login</a>
+    <button type="button" class="menu-botao" aria-expanded="false" aria-controls="menu-principal">Menu</button>
+  </div>
+</header>
+
+<main data-page="home">
+
+  <section class="hero-home">
+    <div class="container hero-home-grid">
+      <div class="hero-home-copy">
+        <h1>Encontre vagas de estágio em todo o Nordeste</h1>
+        <p class="hero-home-lead">Conectamos estudantes a empresas que têm vaga de verdade — sem enrolação, direto do Ceará à Bahia.</p>
+
+        <form class="search-card" role="search">
+          <label for="busca-vaga" class="visually-hidden">Buscar vaga</label>
+          <input id="busca-vaga" type="text" placeholder="Cargo, área ou palavra-chave">
+          <button type="submit" class="btn btn-dark">Buscar Vaga</button>
+        </form>
+
+        <div class="hero-links">
+          <a href="#vagas">Todas as vagas →</a>
+          <a href="#cadastro">Cadastrar seu currículo →</a>
+        </div>
+      </div>
+
+      <div class="hero-home-art">
+        <img src="https://images.unsplash.com/photo-1758611971587-ddc6656822d9?fm=jpg&q=70&w=800&auto=format&fit=crop" alt="Estudante estudando com laptop e fones de ouvido">
+      </div>
+    </div>
+  </section>
+
+  <section class="logos-strip">
+    <div class="container">
+      <p>Grandes empresas e startups do Nordeste estão no <span class="hl">Oxente Vagas</span></p>
+      <div class="logos-row">
+        <span>Cajuína Tech</span>
+        <span>Sertão Digital</span>
+        <span>Aroeira Sistemas</span>
+        <span>Bodocongó Labs</span>
+        <span>Mandacaru Cloud</span>
+      </div>
+    </div>
+  </section>
+
+  <hr class="cordel-divider">
+
+  <section class="paths">
+    <div class="container">
+      <header class="section-heading">
+        <h2>Um cantinho pra cada lado da história</h2>
+        <p>Estudante ou empresa, o caminho é curto até o próximo passo.</p>
+      </header>
+      <div class="path-grid">
+        <article class="path-card">
+          <div class="icon-wrap">
+            <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 3 2 8l10 5 8-4.2V16h1.5V8L12 3Z" fill="#E8752C"/><path d="M6 12.6V17c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.4l-6 3-6-3Z" fill="#E8752C"/></svg>
+          </div>
+          <h3>Sou estudante</h3>
+          <p>Monte seu perfil, envie seu currículo e candidate-se a estágios que combinam com seu curso.</p>
+          <ul>
+            <li>Vagas filtradas por área e cidade</li>
+            <li>Perfil visível para empresas parceiras</li>
+            <li>Acompanhe suas candidaturas em um só lugar</li>
+          </ul>
+          <a href="#cadastro" class="btn btn-outline">Criar meu perfil</a>
+        </article>
+
+        <article class="path-card for-empresa">
+          <div class="icon-wrap">
+            <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M4 21V9l8-5 8 5v12h-6v-6H10v6H4Z" fill="#4C7A5E"/></svg>
+          </div>
+          <h3>Sou empresa</h3>
+          <p>Publique vagas de estágio e encontre estudantes de universidades e institutos de todo o Nordeste.</p>
+          <ul>
+            <li>Publicação de vagas em poucos minutos</li>
+            <li>Banco de currículos por área</li>
+            <li>Painel simples para gerenciar candidaturas</li>
+          </ul>
+          <a href="#cadastro" class="btn btn-outline">Cadastrar minha empresa</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container">
+      <h2>Bora achar essa vaga?</h2>
+      <p>Leva menos de cinco minutos pra montar seu perfil e começar a se candidatar.</p>
+      <div class="cta-actions">
+        <a href="#cadastro" class="btn btn-sun">Criar conta grátis</a>
+        <a href="#vagas" class="btn btn-outline-light">Explorar vagas</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<main data-page="sobre" hidden>
+  <header class="tone-navy">
+    <div class="container inner-hero">
+      <h1>Sobre o Oxente Vagas</h1>
+      <p class="lead">Uma ponte simples e direta entre quem estuda e quem tem vaga de estágio — sem burocracia e sem letra miúda.</p>
+    </div>
+  </header>
+
+  <section class="about-block">
+    <div class="container about-grid">
+      <div class="about-art">
+        <img src="https://images.unsplash.com/photo-1758873269317-51888e824b28?fm=jpg&q=70&w=700&auto=format&fit=crop" alt="Equipe colaborando em escritório">
+      </div>
+      <div>
+        <h2>O que é o Oxente Vagas?</h2>
+        <p>É um sistema pensado para que estudantes de universidades e institutos técnicos do Nordeste encontrem estágios reais, e para que empresas da região — grandes ou pequenas — divulguem suas vagas para quem está começando.</p>
+        <p>Do lado do estudante, é possível montar um perfil com currículo, área de interesse e cidade, e se candidatar às vagas com poucos cliques. Do lado da empresa, dá pra publicar oportunidades, acompanhar candidaturas e buscar talentos por curso ou habilidade.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-block">
+    <div class="container about-grid reverse">
+      <div>
+        <h2>Como funciona, na prática</h2>
+        <ol class="steps-list">
+          <li class="step-item">
+            <span class="step-num">1</span>
+            <div><h3>Cria sua conta</h3><p>Estudante ou empresa — o cadastro é rápido e você escolhe o tipo de perfil.</p></div>
+          </li>
+          <li class="step-item">
+            <span class="step-num">2</span>
+            <div><h3>Monta o perfil</h3><p>Currículo e área de interesse, ou dados da empresa e setor de atuação.</p></div>
+          </li>
+          <li class="step-item">
+            <span class="step-num">3</span>
+            <div><h3>Conecta com a vaga certa</h3><p>Estudantes se candidatam, empresas avaliam e o contato acontece direto por aqui.</p></div>
+          </li>
+        </ol>
+      </div>
+      <div class="about-art">
+        <img src="https://images.unsplash.com/photo-1765648636199-5209ecbaf9a8?fm=jpg&q=70&w=700&auto=format&fit=crop" alt="Estudante sorrindo com planner e laptop">
+      </div>
+    </div>
+  </section>
+
+  <hr class="cordel-divider">
+
+  <section class="faq-section">
+    <div class="container">
+      <header class="section-heading">
+        <h2>Dúvidas frequentes</h2>
+        <p>O que a galera mais pergunta antes de se cadastrar.</p>
+      </header>
+      <div class="faq-list">
+        <details class="faq-item" name="faq" open>
+          <summary>Preciso pagar alguma coisa para usar o Oxente Vagas?</summary>
+          <p>Não. O cadastro e o uso da plataforma são gratuitos tanto para estudantes quanto para empresas.</p>
+        </details>
+        <details class="faq-item" name="faq">
+          <summary>Empresas de fora do Nordeste podem se cadastrar?</summary>
+          <p>Podem, desde que ofereçam vagas de estágio para estudantes da região, presenciais ou remotas.</p>
+        </details>
+        <details class="faq-item" name="faq">
+          <summary>Posso me candidatar a mais de uma vaga ao mesmo tempo?</summary>
+          <p>Sim, não existe limite de candidaturas. Você acompanha todas elas pelo seu painel de estudante.</p>
+        </details>
+        <details class="faq-item" name="faq">
+          <summary>Como a empresa entra em contato com o estudante?</summary>
+          <p>Depois que a empresa avalia uma candidatura, ela pode chamar o estudante diretamente pelos dados de contato do perfil.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<main data-page="vagas" hidden>
+  <header class="tone-navy collage-hero">
+    <div class="container collage-grid">
+      <div class="collage-side">
+        <div class="collage-photo tall"><img src="https://images.unsplash.com/photo-1765648636199-5209ecbaf9a8?fm=jpg&q=70&w=300&auto=format&fit=crop" alt="Estudante com laptop"></div>
+        <div class="collage-photo small"><img src="https://images.unsplash.com/photo-1758611972308-ba5004bee3e4?fm=jpg&q=70&w=300&auto=format&fit=crop" alt="Jovem com fones de ouvido no escritório"></div>
+      </div>
+
+      <div class="collage-center">
+        <h1>Vagas</h1>
+        <p class="lead">A sua oportunidade pode estar a um "oxente" de distância.</p>
+        <form class="search-card" role="search">
+          <label for="busca-vagas" class="visually-hidden">Buscar vaga</label>
+          <input id="busca-vagas" type="text" placeholder="Cargo, empresa ou cidade">
+          <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+      </div>
+
+      <div class="collage-side right">
+        <div class="collage-photo small"><img src="https://images.unsplash.com/photo-1758873269317-51888e824b28?fm=jpg&q=70&w=300&auto=format&fit=crop" alt="Equipe conversando no escritório"></div>
+        <div class="collage-photo tall"><img src="https://images.unsplash.com/photo-1758611971587-ddc6656822d9?fm=jpg&q=70&w=300&auto=format&fit=crop" alt="Jovem estudando com laptop"></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="listing-section">
+    <div class="container">
+      <div class="listing-toolbar">
+        <p class="result-count" id="contador-vagas" aria-live="polite">6 vagas encontradas</p>
+        <div class="listing-filtros">
+          <select class="filter-select" id="filtro-area" aria-label="Filtrar por área">
+            <option value="">Todas as áreas</option>
+            <option>Tecnologia</option>
+            <option>Marketing</option>
+            <option>Design</option>
+            <option>Administração</option>
+          </select>
+          <select class="filter-select" id="ordem-vagas" aria-label="Ordenar vagas">
+            <option value="recentes">Mais recentes</option>
+            <option value="prazo">Prazo mais próximo</option>
+            <option value="area">Área de atuação</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="estado-vazio" id="vazio-vagas" hidden>Nenhuma vaga encontrada. Tente outra palavra ou mude o filtro de área.</p>
+      <div class="vaga-grid" id="lista-vagas">
+        <article class="vaga-card">
+          <div class="vaga-main">
+            <div class="vaga-logo">CT</div>
+            <div>
+              <h3>Estágio em Desenvolvimento Front-end</h3>
+              <p>Cajuína Tech · Fortaleza, CE · Remoto</p>
+              <div class="vaga-tags"><span class="tag">Tecnologia</span><span class="tag tag-sun">20h semanais</span></div>
+            </div>
+          </div>
+          <div class="vaga-meta">
+            <p class="prazo">Inscrições até <time datetime="2026-10-20">20/10</time></p>
+            <a href="#login" class="btn btn-outline btn-sm">Candidatar-se</a>
+          </div>
+        </article>
+
+        <article class="vaga-card">
+          <div class="vaga-main">
+            <div class="vaga-logo">SD</div>
+            <div>
+              <h3>Estágio em Marketing Digital</h3>
+              <p>Sertão Digital · Campina Grande, PB · Presencial</p>
+              <div class="vaga-tags"><span class="tag">Marketing</span><span class="tag tag-sun">30h semanais</span></div>
+            </div>
+          </div>
+          <div class="vaga-meta">
+            <p class="prazo">Inscrições até <time datetime="2026-10-25">25/10</time></p>
+            <a href="#login" class="btn btn-outline btn-sm">Candidatar-se</a>
+          </div>
+        </article>
+
+        <article class="vaga-card">
+          <div class="vaga-main">
+            <div class="vaga-logo">AS</div>
+            <div>
+              <h3>Estágio em Suporte de TI</h3>
+              <p>Aroeira Sistemas · Recife, PE · Híbrido</p>
+              <div class="vaga-tags"><span class="tag">Tecnologia</span><span class="tag tag-sun">25h semanais</span></div>
+            </div>
+          </div>
+          <div class="vaga-meta">
+            <p class="prazo">Inscrições até <time datetime="2026-10-30">30/10</time></p>
+            <a href="#login" class="btn btn-outline btn-sm">Candidatar-se</a>
+          </div>
+        </article>
+
+        <article class="vaga-card">
+          <div class="vaga-main">
+            <div class="vaga-logo">MC</div>
+            <div>
+              <h3>Estágio em Ciência de Dados</h3>
+              <p>Mandacaru Cloud · Natal, RN · Remoto</p>
+              <div class="vaga-tags"><span class="tag">Tecnologia</span><span class="tag tag-sun">20h semanais</span></div>
+            </div>
+          </div>
+          <div class="vaga-meta">
+            <p class="prazo">Inscrições até <time datetime="2026-11-05">05/11</time></p>
+            <a href="#login" class="btn btn-outline btn-sm">Candidatar-se</a>
+          </div>
+        </article>
+
+        <article class="vaga-card">
+          <div class="vaga-main">
+            <div class="vaga-logo">BL</div>
+            <div>
+              <h3>Estágio em Design de Produto</h3>
+              <p>Bodocongó Labs · João Pessoa, PB · Presencial</p>
+              <div class="vaga-tags"><span class="tag">Design</span><span class="tag tag-sun">30h semanais</span></div>
+            </div>
+          </div>
+          <div class="vaga-meta">
+            <p class="prazo">Inscrições até <time datetime="2026-11-08">08/11</time></p>
+            <a href="#login" class="btn btn-outline btn-sm">Candidatar-se</a>
+          </div>
+        </article>
+
+        <article class="vaga-card">
+          <div class="vaga-main">
+            <div class="vaga-logo">CT</div>
+            <div>
+              <h3>Estágio em Administração</h3>
+              <p>Cajuína Tech · Fortaleza, CE · Presencial</p>
+              <div class="vaga-tags"><span class="tag">Administração</span><span class="tag tag-sun">30h semanais</span></div>
+            </div>
+          </div>
+          <div class="vaga-meta">
+            <p class="prazo">Inscrições até <time datetime="2026-11-12">12/11</time></p>
+            <a href="#login" class="btn btn-outline btn-sm">Candidatar-se</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container">
+      <h2>Não achou a vaga ideal ainda?</h2>
+      <p>Cadastre seu currículo e deixe as empresas te encontrarem quando surgir a vaga certa.</p>
+      <div class="cta-actions">
+        <a href="#cadastro" class="btn btn-sun">Cadastrar currículo</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<main data-page="empresas" hidden>
+  <header class="tone-cactus collage-hero">
+    <div class="container collage-grid">
+      <div class="collage-side">
+        <div class="collage-photo tall"><img src="https://images.unsplash.com/photo-1758611972308-ba5004bee3e4?fm=jpg&q=70&w=300&auto=format&fit=crop" alt="Colaborador de empresa parceira"></div>
+        <div class="collage-photo small"><img src="https://images.unsplash.com/photo-1765648636199-5209ecbaf9a8?fm=jpg&q=70&w=300&auto=format&fit=crop" alt="Estudante com laptop"></div>
+      </div>
+
+      <div class="collage-center align-left">
+        <h1>Encontre a <span class="hl-underline">empresa certa</span> pra sua carreira</h1>
+        <p class="lead">Veja todas as empresas que já cadastraram vagas no Oxente Vagas.</p>
+        <form class="search-card" role="search">
+          <label for="busca-empresa" class="visually-hidden">Buscar empresa</label>
+          <input id="busca-empresa" type="text" placeholder="Nome da empresa ou setor">
+          <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+      </div>
+
+      <div class="collage-side right">
+        <div class="collage-photo small"><img src="https://images.unsplash.com/photo-1758873269317-51888e824b28?fm=jpg&q=70&w=300&auto=format&fit=crop" alt="Equipe de empresa parceira"></div>
+        <div class="collage-photo tall"><img src="https://images.unsplash.com/photo-1758611971587-ddc6656822d9?fm=jpg&q=70&w=300&auto=format&fit=crop" alt="Jovem em ambiente de trabalho"></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="listing-section">
+    <div class="container">
+      <div class="listing-toolbar">
+        <p class="result-count" id="contador-empresas" aria-live="polite">6 empresas encontradas</p>
+        <select class="filter-select" id="ordem-empresas" aria-label="Ordenar empresas">
+          <option value="vagas">Mais vagas abertas</option>
+          <option value="nome">Ordem alfabética</option>
+          <option value="setor">Setor</option>
+        </select>
+      </div>
+
+      <p class="estado-vazio" id="vazio-empresas" hidden>Nenhuma empresa encontrada. Tente outro nome ou setor.</p>
+      <div class="empresa-grid" id="lista-empresas">
+        <article class="empresa-card"><div class="vaga-logo">CT</div><h3>Cajuína Tech</h3><p class="setor">Tecnologia · Fortaleza, CE</p><p class="vagas-abertas">2 vagas abertas</p></article>
+        <article class="empresa-card"><div class="vaga-logo">SD</div><h3>Sertão Digital</h3><p class="setor">Marketing · Campina Grande, PB</p><p class="vagas-abertas">1 vaga aberta</p></article>
+        <article class="empresa-card"><div class="vaga-logo">AS</div><h3>Aroeira Sistemas</h3><p class="setor">Tecnologia · Recife, PE</p><p class="vagas-abertas">1 vaga aberta</p></article>
+        <article class="empresa-card"><div class="vaga-logo">MC</div><h3>Mandacaru Cloud</h3><p class="setor">Tecnologia · Natal, RN</p><p class="vagas-abertas">1 vaga aberta</p></article>
+        <article class="empresa-card"><div class="vaga-logo">BL</div><h3>Bodocongó Labs</h3><p class="setor">Design · João Pessoa, PB</p><p class="vagas-abertas">1 vaga aberta</p></article>
+        <article class="empresa-card"><div class="vaga-logo">FM</div><h3>Forró Motors</h3><p class="setor">Indústria · Caruaru, PE</p><p class="vagas-abertas">Nenhuma vaga aberta</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <div class="container">
+      <h2>Sua empresa também pode estar aqui</h2>
+      <p>Cadastre sua empresa e publique a primeira vaga em poucos minutos.</p>
+      <div class="cta-actions">
+        <a href="#cadastro" class="btn btn-sun">Cadastrar minha empresa</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<main data-page="login" hidden>
+  <div class="auth-shell tone-terracotta">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <h1>Login</h1>
+        <p class="auth-sub">Acesse sua conta pra ver vagas ou candidaturas.</p>
+
+        <form id="form-login">
+          <div class="field">
+            <label for="login-email">E-mail</label>
+            <input id="login-email" name="email" type="email" placeholder="voce@email.com" autocomplete="username" required>
+          </div>
+          <div class="field">
+            <label for="login-senha">Senha</label>
+            <input id="login-senha" name="senha" type="password" placeholder="••••••••" autocomplete="current-password" required>
+          </div>
+          <p class="mensagem" id="msg-login" role="alert"></p>
+          <button type="submit" class="btn btn-sun btn-block">Entrar</button>
+        </form>
+
+        <p class="auth-footer-note">Não tem conta?<a href="#cadastro">Cadastre-se</a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<main data-page="cadastro" hidden>
+  <div class="auth-shell tone-terracotta">
+    <div class="auth-wrap">
+      <div class="auth-card">
+        <h1>Criar conta</h1>
+        <p class="auth-sub">Escolha o tipo de perfil pra começar.</p>
+
+        <div class="role-toggle">
+          <button type="button" aria-pressed="true" data-role="estudante">Sou estudante</button>
+          <button type="button" aria-pressed="false" data-role="empresa">Sou empresa</button>
+        </div>
+
+        <form id="form-cadastro">
+          <fieldset class="role-panel" data-role="estudante">
+            <legend class="visually-hidden">Dados do estudante</legend>
+            <div class="field"><label for="est-nome">Nome completo</label><input id="est-nome" name="nome" type="text" placeholder="Seu nome" autocomplete="name" required></div>
+            <div class="field"><label for="est-email">E-mail</label><input id="est-email" name="email" type="email" placeholder="voce@email.com" autocomplete="email" required></div>
+            <div class="field"><label for="est-curso">Curso e instituição</label><input id="est-curso" name="curso" type="text" placeholder="Ex.: Ciência da Computação — UFCG" autocomplete="off" required></div>
+            <div class="field"><label for="est-cidade">Cidade</label><input id="est-cidade" name="cidade" type="text" placeholder="Sua cidade" autocomplete="address-level2" required></div>
+            <div class="field"><label for="est-senha">Senha</label><input id="est-senha" name="senha" type="password" placeholder="Crie uma senha" autocomplete="new-password" minlength="6" required></div>
+          </fieldset>
+
+          <fieldset class="role-panel" data-role="empresa" hidden disabled>
+            <legend class="visually-hidden">Dados da empresa</legend>
+            <div class="field"><label for="emp-nome">Nome da empresa</label><input id="emp-nome" name="nome" type="text" placeholder="Razão social ou nome fantasia" autocomplete="organization" required></div>
+            <div class="field"><label for="emp-email">E-mail corporativo</label><input id="emp-email" name="email" type="email" placeholder="contato@empresa.com" autocomplete="email" required></div>
+            <div class="field"><label for="emp-setor">Setor de atuação</label><input id="emp-setor" name="setor" type="text" placeholder="Ex.: Tecnologia, Indústria, Varejo" autocomplete="off" required></div>
+            <div class="field"><label for="emp-cidade">Cidade</label><input id="emp-cidade" name="cidade" type="text" placeholder="Cidade sede da empresa" autocomplete="address-level2" required></div>
+            <div class="field"><label for="emp-senha">Senha</label><input id="emp-senha" name="senha" type="password" placeholder="Crie uma senha" autocomplete="new-password" minlength="6" required></div>
+          </fieldset>
+
+          <p class="mensagem" id="msg-cadastro" role="alert"></p>
+          <button type="submit" class="btn btn-sun btn-block">Criar conta</button>
+        </form>
+
+        <p class="auth-footer-note">Já tem conta?<a href="#login">Entrar</a></p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="bandeirinhas" aria-hidden="true"></div>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="brand-word">Oxente<span>Vagas</span></span>
+        <p>Uma plataforma de estágios feita para aproximar estudantes e empresas do Nordeste.</p>
+      </div>
+      <div class="footer-col">
+        <h2>Oxente Vagas</h2>
+        <a href="#sobre">Sobre nós</a>
+        <a href="#vagas">Vagas</a>
+        <a href="#sobre">Dúvidas frequentes</a>
+      </div>
+      <div class="footer-col">
+        <h2>Suporte</h2>
+        <a href="tel:+5584000000">(84) 0000-0000</a>
+        <a href="mailto:contato@oxentevagas.com.br">contato@oxentevagas.com.br</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Oxente Vagas. Todos os direitos reservados.</span>
+      <span>Feito com carinho no Nordeste do Brasil</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
