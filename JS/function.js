@@ -1,132 +1,140 @@
-// por falta de aula a IA será convocada como professor
-
 (function () {
-  var SCREEN_NAMES = ['home', 'sobre', 'vagas', 'empresas', 'login', 'cadastro', 'criar-perfil', 'vinculo-academico', 'atributos', 'perfil', 'empresa-painel', 'termos'];
-  var HEADER_TONE_BY_SCREEN = { empresas: 'tone-cactus', login: 'tone-terracotta', cadastro: 'tone-terracotta', 'criar-perfil': 'tone-terracotta', 'vinculo-academico': 'tone-terracotta', atributos: 'tone-terracotta', perfil: 'tone-terracotta', 'empresa-painel': 'tone-navy' };
-  var SCREENS_WITHOUT_FOOTER = ['login', 'cadastro', 'criar-perfil', 'vinculo-academico', 'atributos', 'perfil', 'empresa-painel'];
-  var SCREENS_WITHOUT_HEADER_NAV = ['criar-perfil', 'vinculo-academico', 'atributos', 'perfil', 'empresa-painel'];
+  var PAGES = ['home', 'sobre', 'vagas', 'empresas', 'login', 'cadastro', 'criar-perfil', 'vinculo-academico', 'atributos', 'perfil', 'empresa-painel', 'termos'];
+  var TONE_BY_PAGE = { empresas: 'tom-cacto', login: 'tom-terracota', cadastro: 'tom-terracota', 'criar-perfil': 'tom-terracota', 'vinculo-academico': 'tom-terracota', atributos: 'tom-terracota', perfil: 'tom-terracota', 'empresa-painel': 'tom-marinho' };
+  var HIDE_FOOTER_ON = ['login', 'cadastro', 'criar-perfil', 'vinculo-academico', 'atributos', 'perfil', 'empresa-painel'];
+  var HIDE_HEADER_CENTER_ON = ['criar-perfil', 'vinculo-academico', 'atributos', 'perfil', 'empresa-painel'];
 
-  var siteHeader = document.getElementById('site-header');
-  var siteFooter = document.getElementById('site-footer');
-  var screens = document.querySelectorAll('.screen');
+  var header = document.getElementById('cabecalho-site');
+  var footer = document.getElementById('rodape-site');
+  var pageEls = document.querySelectorAll('.pagina');
+  var navLinks = document.querySelectorAll('[data-nav-link]');
 
-  function getScreenFromHash() {
+  function currentPageFromHash() {
     var hash = (window.location.hash || '#home').replace('#', '');
     if (hash === 'cadastro-empresa') return 'cadastro';
-    return SCREEN_NAMES.indexOf(hash) !== -1 ? hash : 'home';
+    return PAGES.indexOf(hash) !== -1 ? hash : 'home';
   }
 
-  function updateHeaderTone(screenName) {
-    siteHeader.classList.remove('tone-cactus', 'tone-terracotta', 'tone-navy');
-    if (screenName === 'home') {
-      siteHeader.classList.toggle('is-scrolled', window.scrollY > 12);
+  function renderHeaderTone(page) {
+    header.classList.remove('tom-cacto', 'tom-terracota', 'tom-marinho');
+    if (page === 'home') {
+      header.classList.toggle('rolado', window.scrollY > 12);
     } else {
-      siteHeader.classList.add('is-scrolled');
-      if (HEADER_TONE_BY_SCREEN[screenName]) siteHeader.classList.add(HEADER_TONE_BY_SCREEN[screenName]);
+      header.classList.add('rolado');
+      if (TONE_BY_PAGE[page]) header.classList.add(TONE_BY_PAGE[page]);
     }
   }
-  function applySignupMode() {
-    var accountTypeToggle = document.getElementById('cadastro-account-type');
-    var cadastroSubtitle = document.getElementById('cadastro-subtitle');
-    var accountTypeButtons = document.querySelectorAll('.account-type-toggle button');
-    var accountTypePanels = document.querySelectorAll('.account-type-panel');
-    if (!accountTypeToggle || !cadastroSubtitle || !accountTypeButtons.length) return;
+
+  function aplicarModoCadastro() {
+    var cadastroRoleToggle = document.getElementById('cadastro-alternador-tipo-conta');
+    var cadastroSubtitulo = document.getElementById('cadastro-subtitulo');
+    var botoesRole = document.querySelectorAll('.alternador-tipo-conta button');
+    var paineisRole = document.querySelectorAll('.painel-tipo-conta');
+    if (!cadastroRoleToggle || !cadastroSubtitulo || !botoesRole.length) return;
 
     var somenteEmpresa = window.location.hash === '#cadastro-empresa';
-    accountTypeToggle.toggleAttribute('hidden', somenteEmpresa);
-    cadastroSubtitle.textContent = somenteEmpresa
+    cadastroRoleToggle.style.display = somenteEmpresa ? 'none' : '';
+    cadastroSubtitulo.textContent = somenteEmpresa
       ? 'Cadastro exclusivo para empresas parceiras.'
       : 'Escolha o tipo de perfil pra começar.';
 
     if (somenteEmpresa) {
-      accountTypeButtons.forEach(function (accountTypeButton) { accountTypeButton.classList.toggle('is-active', accountTypeButton.dataset.accountType === 'empresa'); });
-      accountTypePanels.forEach(function (panel) { panel.classList.toggle('is-active', panel.dataset.accountType === 'empresa'); });
+      botoesRole.forEach(function (b) { b.classList.toggle('ativo', b.dataset.role === 'empresa'); });
+      paineisRole.forEach(function (p) { p.classList.toggle('ativo', p.dataset.role === 'empresa'); });
     } else {
-      accountTypeButtons.forEach(function (accountTypeButton) { accountTypeButton.classList.toggle('is-active', accountTypeButton.dataset.accountType === 'estudante'); });
-      accountTypePanels.forEach(function (panel) { panel.classList.toggle('is-active', panel.dataset.accountType === 'estudante'); });
+      botoesRole.forEach(function (b) { b.classList.toggle('ativo', b.dataset.role === 'estudante'); });
+      paineisRole.forEach(function (p) { p.classList.toggle('ativo', p.dataset.role === 'estudante'); });
     }
   }
-// if e else não de python?
-  function showScreen(screenName) {
-    screens.forEach(function (screenElement) {
-      screenElement.classList.toggle('is-active', screenElement.getAttribute('data-screen') === screenName);
+
+  function showPage(page) {
+    pageEls.forEach(function (el) {
+      el.classList.toggle('pagina-ativa', el.getAttribute('data-page') === page);
     });
-    siteFooter.classList.toggle('is-hidden', SCREENS_WITHOUT_FOOTER.indexOf(screenName) !== -1);
-    siteHeader.classList.toggle('hide-nav', SCREENS_WITHOUT_HEADER_NAV.indexOf(screenName) !== -1);
-    updateHeaderTone(screenName);
-    if (screenName === 'cadastro') applySignupMode();
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    footer.classList.toggle('oculto', HIDE_FOOTER_ON.indexOf(page) !== -1);
+    header.classList.toggle('ocultar-centro', HIDE_HEADER_CENTER_ON.indexOf(page) !== -1);
+    navLinks.forEach(function (link) {
+      link.classList.toggle('ativo', link.getAttribute('data-page-target') === page);
+    });
+    renderHeaderTone(page);
+    if (page === 'cadastro') aplicarModoCadastro();
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
 
-  function showCurrentScreen() {
-    showScreen(getScreenFromHash());
+  function route() {
+    showPage(currentPageFromHash());
   }
 
-  window.addEventListener('hashchange', showCurrentScreen);
+  window.addEventListener('hashchange', route);
   window.addEventListener('scroll', function () {
-    if (getScreenFromHash() === 'home') {
-      siteHeader.classList.toggle('is-scrolled', window.scrollY > 12);
+    if (currentPageFromHash() === 'home') {
+      header.classList.toggle('rolado', window.scrollY > 12);
     }
   }, { passive: true });
 
   document.addEventListener('DOMContentLoaded', function () {
-    showCurrentScreen();
+    route();
+
     document.querySelectorAll('.faq-item').forEach(function (item) {
-      var question = item.querySelector('.faq-question');
+      var question = item.querySelector('.faq-pergunta');
       question.addEventListener('click', function () {
-        var wasOpen = item.classList.contains('is-open');
-        item.parentElement.querySelectorAll('.faq-item').forEach(function (otherItem) { otherItem.classList.remove('is-open'); });
-        if (!wasOpen) item.classList.add('is-open');
+        var wasOpen = item.classList.contains('aberto');
+        item.parentElement.querySelectorAll('.faq-item').forEach(function (el) { el.classList.remove('aberto'); });
+        if (!wasOpen) item.classList.add('aberto');
       });
     });
-    var toggleButtons = document.querySelectorAll('.account-type-toggle button');
-    toggleButtons.forEach(function (button) {
-      button.addEventListener('click', function () {
-        toggleButtons.forEach(function (siblingButton) { siblingButton.classList.remove('is-active'); });
-        button.classList.add('is-active');
-        var target = button.dataset.accountType;
-        document.querySelectorAll('.account-type-panel').forEach(function (panel) {
-          panel.classList.toggle('is-active', panel.dataset.accountType === target);
+
+    var toggleButtons = document.querySelectorAll('.alternador-tipo-conta button');
+    toggleButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        toggleButtons.forEach(function (b) { b.classList.remove('ativo'); });
+        btn.classList.add('ativo');
+        var target = btn.dataset.role;
+        document.querySelectorAll('.painel-tipo-conta').forEach(function (panel) {
+          panel.classList.toggle('ativo', panel.dataset.role === target);
         });
         validarCadastro();
       });
     });
+
     var cadastroForm = document.getElementById('cadastro-form');
-    var empresaNomeInput = document.getElementById('empresa-nome');
-    var empresaCnpjInput = document.getElementById('empresa-cnpj');
-    var empresaCnpjField = empresaCnpjInput ? empresaCnpjInput.closest('.form-field') : null;
-    var empresaTelefoneInput = document.getElementById('empresa-telefone');
-    var empresaEmailInput = document.getElementById('empresa-email');
-    var empresaEmailField = empresaEmailInput ? empresaEmailInput.closest('.form-field') : null;
-    var empresaDescricaoInput = document.getElementById('empresa-descricao');
-    var empresaSenhaInput = document.getElementById('empresa-senha');
-    var empresaSenhaField = empresaSenhaInput ? empresaSenhaInput.closest('.form-field') : null;
-    var empresaDeclaracaoInput = document.getElementById('empresa-declaracao');
-    var empresaLgpdInput = document.getElementById('empresa-lgpd');
+    var empNomeInput = document.getElementById('empresa-nome');
+    var empCnpjInput = document.getElementById('empresa-cnpj');
+    var empCnpjField = empCnpjInput ? empCnpjInput.closest('.campo') : null;
+    var empTelefoneInput = document.getElementById('empresa-telefone');
+    var empEmailInput = document.getElementById('empresa-email');
+    var empEmailField = empEmailInput ? empEmailInput.closest('.campo') : null;
+    var empDescricaoInput = document.getElementById('empresa-descricao');
+    var empSenhaInput = document.getElementById('empresa-senha');
+    var empSenhaField = empSenhaInput ? empSenhaInput.closest('.campo') : null;
+    var empDeclaracaoInput = document.getElementById('empresa-declaracao');
+    var empLgpdInput = document.getElementById('empresa-lgpd');
+
     function formatarCNPJ(valor) {
-      var digitos = valor.replace(/\D/g, '').slice(0, 14);
-      digitos = digitos.replace(/^(\digitos{2})(\digitos)/, '$1.$2');
-      digitos = digitos.replace(/^(\digitos{2})\.(\digitos{3})(\digitos)/, '$1.$2.$3');
-      digitos = digitos.replace(/\.(\digitos{3})(\digitos)/, '.$1/$2');
-      digitos = digitos.replace(/(\digitos{4})(\digitos)/, '$1-$2');
-      return digitos;
+      var d = valor.replace(/\D/g, '').slice(0, 14);
+      d = d.replace(/^(\d{2})(\d)/, '$1.$2');
+      d = d.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      d = d.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      d = d.replace(/(\d{4})(\d)/, '$1-$2');
+      return d;
     }
-    if (empresaCnpjInput) {
-      empresaCnpjInput.addEventListener('input', function () {
-        empresaCnpjInput.value = formatarCNPJ(empresaCnpjInput.value);
+    if (empCnpjInput) {
+      empCnpjInput.addEventListener('input', function () {
+        empCnpjInput.value = formatarCNPJ(empCnpjInput.value);
       });
     }
-    if (empresaTelefoneInput) {
-      empresaTelefoneInput.addEventListener('input', function () {
-        var digitos = empresaTelefoneInput.value.replace(/\D/g, '').slice(0, 11);
-        digitos = digitos.replace(/^(\digitos{2})(\digitos)/, '($1) $2');
-        digitos = digitos.replace(/(\digitos{4,5})(\digitos{1,4})$/, '$1-$2');
-        empresaTelefoneInput.value = digitos;
+    if (empTelefoneInput) {
+      empTelefoneInput.addEventListener('input', function () {
+        var d = empTelefoneInput.value.replace(/\D/g, '').slice(0, 11);
+        d = d.replace(/^(\d{2})(\d)/, '($1) $2');
+        d = d.replace(/(\d{4,5})(\d{1,4})$/, '$1-$2');
+        empTelefoneInput.value = d;
       });
     }
+
     function cnpjValido(valor) {
-      var cnpj = (valor || '').replace(/\D/g, '');
-      if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
+      var c = (valor || '').replace(/\D/g, '');
+      if (c.length !== 14 || /^(\d)\1{13}$/.test(c)) return false;
 
       function calcularDigito(base) {
         var pesos = base.length === 12
@@ -138,85 +146,88 @@
         return resto < 2 ? 0 : 11 - resto;
       }
 
-      var base = cnpj.slice(0, 12);
-      var primeiroDigito = calcularDigito(base);
-      var segundoDigito = calcularDigito(base + String(primeiroDigito));
-      return cnpj === base + String(primeiroDigito) + String(segundoDigito);
+      var base = c.slice(0, 12);
+      var d1 = calcularDigito(base);
+      var d2 = calcularDigito(base + String(d1));
+      return c === base + String(d1) + String(d2);
     }
+
     var DOMINIOS_GRATUITOS = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.com.br', 'live.com', 'icloud.com', 'bol.com.br', 'uol.com.br', 'terra.com.br', 'zipmail.com.br'];
     function emailCorporativoValido(valor) {
       if (!/\S+@\S+\.\S+/.test(valor)) return false;
       var dominio = valor.split('@')[1].toLowerCase().trim();
       return DOMINIOS_GRATUITOS.indexOf(dominio) === -1;
     }
-// ja ta maior que o outro , não gostei
-    var cadastroSubmitReveal = document.getElementById('cadastro-submit-reveal');
-    var cadastroSubmitButton = document.getElementById('cadastro-submit-button');
 
-    var logoUpload = document.getElementById('empresa-logo-upload');
-    var logoInput = document.getElementById('empresa-logo-input');
-    var logoPreview = document.getElementById('empresa-logo-preview');
+    var cadastroNextWrap = document.getElementById('cadastro-avancar-envoltorio');
+    var cadastroNextBtn = document.getElementById('cadastro-avancar-botao');
+
+    var logoUpload = document.getElementById('envio-logo');
+    var logoInput = document.getElementById('logo-entrada');
+    var logoPreview = document.getElementById('logo-previa');
     if (logoUpload && logoInput) {
       logoUpload.addEventListener('click', function () { logoInput.click(); });
       logoInput.addEventListener('change', function () {
         var file = logoInput.files && logoInput.files[0];
         if (!file) return;
         var reader = new FileReader();
-        reader.onload = function (event) {
-          logoPreview.src = event.target.result;
-          logoUpload.classList.add('has-image');
+        reader.onload = function (e) {
+          logoPreview.src = e.target.result;
+          logoUpload.classList.add('com-imagem');
         };
         reader.readAsDataURL(file);
       });
     }
 
-    function getSelectedAccountType() {
-      var ativo = document.querySelector('.account-type-toggle button.is-active');
-      return ativo ? ativo.dataset.accountType : 'estudante';
+    function getCadastroRole() {
+      var ativo = document.querySelector('.alternador-tipo-conta button.ativo');
+      return ativo ? ativo.dataset.role : 'estudante';
     }
 
     function validarCadastro() {
       if (!cadastroForm) return false;
-      var accountType = getSelectedAccountType();
-      var cadastroValido;
+      var role = getCadastroRole();
+      var ok;
 
-      if (accountType === 'estudante') {
-        cadastroValido = true;
+      if (role === 'estudante') {
+        ok = true;
       } else {
-        var cnpjOk = cnpjValido(empresaCnpjInput.value);
-        if (empresaCnpjField) empresaCnpjField.classList.toggle('has-error', empresaCnpjInput.value.replace(/\D/g, '').length === 14 && !cnpjOk);
+        var cnpjOk = cnpjValido(empCnpjInput.value);
+        if (empCnpjField) empCnpjField.classList.toggle('com-erro', empCnpjInput.value.replace(/\D/g, '').length === 14 && !cnpjOk);
 
-        var emailOk = emailCorporativoValido(empresaEmailInput.value);
-        if (empresaEmailField) empresaEmailField.classList.toggle('has-error', empresaEmailInput.value !== '' && !emailOk);
+        var emailOk = emailCorporativoValido(empEmailInput.value);
+        if (empEmailField) empEmailField.classList.toggle('com-erro', empEmailInput.value !== '' && !emailOk);
 
-        var senhaOk = empresaSenhaInput.value.length >= 8;
-        if (empresaSenhaField) empresaSenhaField.classList.toggle('has-error', empresaSenhaInput.value !== '' && !senhaOk);
+        var senhaOk = empSenhaInput.value.length >= 8;
+        if (empSenhaField) empSenhaField.classList.toggle('com-erro', empSenhaInput.value !== '' && !senhaOk);
 
-        var descricaoOk = empresaDescricaoInput.value.trim().length >= 10;
+        var descricaoOk = empDescricaoInput.value.trim().length >= 10;
 
-        cadastroValido = empresaNomeInput.value.trim().length >= 2 &&
+        ok = empNomeInput.value.trim().length >= 2 &&
           cnpjOk &&
           emailOk &&
           descricaoOk &&
           senhaOk &&
-          !!(empresaDeclaracaoInput && empresaDeclaracaoInput.checked) &&
-          !!(empresaLgpdInput && empresaLgpdInput.checked);
+          !!(empDeclaracaoInput && empDeclaracaoInput.checked) &&
+          !!(empLgpdInput && empLgpdInput.checked);
       }
 
-      cadastroSubmitReveal.classList.toggle('is-visible', cadastroValido);
-      cadastroSubmitButton.disabled = !cadastroValido;
-      return cadastroValido;
+      cadastroNextWrap.classList.toggle('visivel', ok);
+      cadastroNextBtn.disabled = !ok;
+      return ok;
     }
 
-    [empresaNomeInput, empresaCnpjInput, empresaTelefoneInput, empresaEmailInput, empresaDescricaoInput, empresaSenhaInput].forEach(function (input) {
+    [empNomeInput, empCnpjInput, empTelefoneInput, empEmailInput, empDescricaoInput, empSenhaInput].forEach(function (input) {
       if (input) input.addEventListener('input', validarCadastro);
     });
-    [empresaDeclaracaoInput, empresaLgpdInput].forEach(function (input) {
+    [empDeclaracaoInput, empLgpdInput].forEach(function (input) {
       if (input) input.addEventListener('change', validarCadastro);
     });
+
     document.querySelectorAll('form[data-demo]').forEach(function (form) {
-      form.addEventListener('submit', function (event) { event.preventDefault(); });
+      form.addEventListener('submit', function (e) { e.preventDefault(); });
     });
+
     var ZOOM_MIN = 80, ZOOM_MAX = 150, ZOOM_STEP = 10, ZOOM_DEFAULT = 100;
     var zoomLevel = ZOOM_DEFAULT;
 
@@ -224,52 +235,53 @@
       document.body.style.zoom = zoomLevel + '%';
     }
 
-    var zoomInButton = document.getElementById('zoom-in');
-    var zoomOutButton = document.getElementById('zoom-out');
-    var zoomResetButton = document.getElementById('zoom-reset');
+    var zoomInBtn = document.getElementById('zoom-aumentar');
+    var zoomOutBtn = document.getElementById('zoom-diminuir');
+    var zoomResetBtn = document.getElementById('zoom-restaurar');
 
-    zoomInButton.addEventListener('click', function () {
+    zoomInBtn.addEventListener('click', function () {
       zoomLevel = Math.min(ZOOM_MAX, zoomLevel + ZOOM_STEP);
       applyZoom();
     });
-    zoomOutButton.addEventListener('click', function () {
+    zoomOutBtn.addEventListener('click', function () {
       zoomLevel = Math.max(ZOOM_MIN, zoomLevel - ZOOM_STEP);
       applyZoom();
     });
-    zoomResetButton.addEventListener('click', function () {
+    zoomResetBtn.addEventListener('click', function () {
       zoomLevel = ZOOM_DEFAULT;
       applyZoom();
     });
-    var darkToggle = document.getElementById('dark-mode-toggle');
-    var iconMoon = document.getElementById('icon-moon');
-    var iconSun = document.getElementById('icon-sun');
+
+    var darkToggle = document.getElementById('alternar-modo-escuro');
+    var iconMoon = document.getElementById('icone-lua');
+    var iconSun = document.getElementById('icone-sol');
 
     darkToggle.addEventListener('click', function () {
-      var isDark = document.documentElement.classList.toggle('dark-mode');
+      var isDark = document.documentElement.classList.toggle('modo-escuro');
       darkToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
       darkToggle.title = isDark ? 'Desativar modo escuro' : 'Ativar modo escuro';
       darkToggle.setAttribute('aria-label', darkToggle.title);
-      iconMoon.toggleAttribute('hidden', isDark);
-      iconSun.toggleAttribute('hidden', !isDark);
+      iconMoon.style.display = isDark ? 'none' : '';
+      iconSun.style.display = isDark ? '' : 'none';
     });
-    var avatarUpload = document.getElementById('avatar-upload');
-    var avatarInput = document.getElementById('avatar-input');
-    var avatarPreview = document.getElementById('avatar-preview');
-    var nomeInput = document.getElementById('perfil-nome');
+
+    var avatarUpload = document.getElementById('envio-avatar');
+    var avatarInput = document.getElementById('avatar-entrada');
+    var avatarPreview = document.getElementById('avatar-previa');
+    var usuarioInput = document.getElementById('perfil-usuario');
     var emailInput = document.getElementById('perfil-email');
     var senhaInput = document.getElementById('perfil-senha');
-    var senhaField = senhaInput ? senhaInput.closest('.form-field') : null;
+    var senhaField = senhaInput ? senhaInput.closest('.campo') : null;
     var confirmarSenhaInput = document.getElementById('perfil-confirmar-senha');
-    var confirmarSenhaField = document.getElementById('perfil-confirmar-senha-field');
+    var confirmarSenhaField = document.getElementById('confirmar-senha-campo');
     var nascimentoInput = document.getElementById('perfil-nascimento');
-    var idadeField = document.getElementById('perfil-nascimento-field');
+    var idadeField = document.getElementById('idade-campo');
     var cpfInput = document.getElementById('perfil-cpf');
     var telefoneInput = document.getElementById('perfil-telefone');
     var declaracaoInput = document.getElementById('perfil-declaracao');
     var lgpdInput = document.getElementById('perfil-lgpd');
-    var avatarHint = document.getElementById('avatar-hint');
-    var perfilSubmitReveal = document.getElementById('perfil-submit-reveal');
-    var perfilSubmitButton = document.getElementById('perfil-submit-button');
+    var nextBtnWrap = document.getElementById('envoltorio-botao-avancar');
+    var nextBtn = document.getElementById('botao-avancar');
 
     if (avatarUpload && avatarInput) {
       avatarUpload.addEventListener('click', function () { avatarInput.click(); });
@@ -278,66 +290,69 @@
         var file = avatarInput.files && avatarInput.files[0];
         if (!file) return;
         var reader = new FileReader();
-        reader.onload = function (event) {
-          avatarPreview.src = event.target.result;
-          avatarUpload.classList.add('has-image');
+        reader.onload = function (e) {
+          avatarPreview.src = e.target.result;
+          avatarUpload.classList.add('com-imagem');
           validarPerfil();
         };
         reader.readAsDataURL(file);
       });
     }
+
     function formatarCPF(valor) {
-      var digitos = valor.replace(/\D/g, '').slice(0, 11);
-      digitos = digitos.replace(/^(\digitos{3})(\digitos)/, '$1.$2');
-      digitos = digitos.replace(/^(\digitos{3})\.(\digitos{3})(\digitos)/, '$1.$2.$3');
-      digitos = digitos.replace(/\.(\digitos{3})(\digitos)/, '.$1-$2');
-      return digitos;
+      var d = valor.replace(/\D/g, '').slice(0, 11);
+      d = d.replace(/^(\d{3})(\d)/, '$1.$2');
+      d = d.replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
+      d = d.replace(/\.(\d{3})(\d)/, '.$1-$2');
+      return d;
     }
     function formatarTelefone(valor) {
-      var digitos = valor.replace(/\D/g, '').slice(0, 11);
-      digitos = digitos.replace(/^(\digitos{2})(\digitos)/, '($1) $2');
-      digitos = digitos.replace(/(\digitos{5})(\digitos{1,4})$/, '$1-$2');
-      return digitos;
+      var d = valor.replace(/\D/g, '').slice(0, 11);
+      d = d.replace(/^(\d{2})(\d)/, '($1) $2');
+      d = d.replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+      return d;
     }
     if (cpfInput) cpfInput.addEventListener('input', function () { cpfInput.value = formatarCPF(cpfInput.value); });
     if (telefoneInput) telefoneInput.addEventListener('input', function () { telefoneInput.value = formatarTelefone(telefoneInput.value); });
+
     function calcularIdade(dataStr) {
       if (!dataStr) return null;
       var nascimento = new Date(dataStr + 'T00:00:00');
       if (isNaN(nascimento.getTime())) return null;
       var hoje = new Date();
       var idade = hoje.getFullYear() - nascimento.getFullYear();
-      var diferencaMeses = hoje.getMonth() - nascimento.getMonth();
-      if (diferencaMeses < 0 || (diferencaMeses === 0 && hoje.getDate() < nascimento.getDate())) idade--;
+      var m = hoje.getMonth() - nascimento.getMonth();
+      if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) idade--;
       return idade;
     }
+
     function senhaForteOk(valor) {
       return valor.length >= 8 && /[A-Za-zÀ-ÿ]/.test(valor) && /[0-9]/.test(valor);
     }
-//  a IA ta me explicando de uma forma mo daora ate
+
     function validarPerfil() {
-      var usuarioOk = nomeInput.value.trim().length >= 3;
+      var usuarioOk = usuarioInput.value.trim().length >= 3;
       var emailOk = /\S+@\S+\.\S+/.test(emailInput.value);
       var senhaOk = senhaForteOk(senhaInput.value);
-      if (senhaField) senhaField.classList.toggle('has-error', senhaInput.value !== '' && !senhaOk);
+      if (senhaField) senhaField.classList.toggle('com-erro', senhaInput.value !== '' && !senhaOk);
       var confirmarOk = senhaOk && confirmarSenhaInput.value === senhaInput.value;
-      confirmarSenhaField.classList.toggle('has-error', confirmarSenhaInput.value !== '' && !confirmarOk);
+      confirmarSenhaField.classList.toggle('com-erro', confirmarSenhaInput.value !== '' && !confirmarOk);
 
       var idadeCalculada = calcularIdade(nascimentoInput.value);
       var idadeOk = idadeCalculada !== null && idadeCalculada >= 16 && idadeCalculada <= 120;
-      idadeField.classList.toggle('has-error', nascimentoInput.value !== '' && !idadeOk);
+      idadeField.classList.toggle('com-erro', nascimentoInput.value !== '' && !idadeOk);
 
       var cpfOk = cpfInput.value.replace(/\D/g, '').length === 11;
       var declaracaoOk = declaracaoInput.checked;
       var lgpdOk = lgpdInput.checked;
 
-      var formularioValido = usuarioOk && emailOk && senhaOk && confirmarOk && idadeOk && cpfOk && declaracaoOk && lgpdOk;
-      perfilSubmitReveal.classList.toggle('is-visible', formularioValido);
-      perfilSubmitButton.disabled = !formularioValido;
-      return formularioValido;
+      var tudoOk = usuarioOk && emailOk && senhaOk && confirmarOk && idadeOk && cpfOk && declaracaoOk && lgpdOk;
+      nextBtnWrap.classList.toggle('visivel', tudoOk);
+      nextBtn.disabled = !tudoOk;
+      return tudoOk;
     }
 
-    [nomeInput, emailInput, senhaInput, confirmarSenhaInput, nascimentoInput, cpfInput, telefoneInput].forEach(function (input) {
+    [usuarioInput, emailInput, senhaInput, confirmarSenhaInput, nascimentoInput, cpfInput, telefoneInput].forEach(function (input) {
       if (input) input.addEventListener('input', validarPerfil);
     });
     [declaracaoInput, lgpdInput].forEach(function (input) {
@@ -352,19 +367,20 @@
 
     var perfilForm = document.getElementById('perfil-form');
     if (perfilForm) {
-      perfilForm.addEventListener('submit', function (event) {
-        event.preventDefault();
+      perfilForm.addEventListener('submit', function (e) {
+        e.preventDefault();
         if (validarPerfil()) {
-          perfilData.nome = nomeInput.value.trim();
+          perfilData.nome = usuarioInput.value.trim();
           perfilData.email = emailInput.value.trim();
           perfilData.idade = String(calcularIdade(nascimentoInput.value));
           perfilData.cpf = cpfInput.value.trim();
           perfilData.telefone = telefoneInput.value.trim();
-          perfilData.foto = avatarUpload.classList.contains('has-image') ? avatarPreview.src : '';
+          perfilData.foto = avatarUpload.classList.contains('com-imagem') ? avatarPreview.src : '';
           window.location.hash = '#vinculo-academico';
         }
       });
     }
+
     var academicoForm = document.getElementById('academico-form');
     var instituicaoInput = document.getElementById('academico-instituicao');
     var cursoInput = document.getElementById('academico-curso');
@@ -372,13 +388,13 @@
     var tipoEnsinoInput = document.getElementById('academico-tipo-ensino');
     var periodoInput = document.getElementById('academico-periodo');
     var matriculaInput = document.getElementById('academico-matricula');
-    var academicoSubmitReveal = document.getElementById('academico-submit-reveal');
-    var academicoSubmitButton = document.getElementById('academico-submit-button');
+    var academicoNextWrap = document.getElementById('academico-avancar-envoltorio');
+    var academicoNextBtn = document.getElementById('academico-avancar-botao');
 
     if (cursoInput && cursoOutroInput) {
       cursoInput.addEventListener('change', function () {
         var ehOutro = cursoInput.value === '__outro__';
-        cursoOutroInput.toggleAttribute('hidden', !ehOutro);
+        cursoOutroInput.style.display = ehOutro ? 'block' : 'none';
         if (!ehOutro) cursoOutroInput.value = '';
         validarAcademico();
       });
@@ -395,10 +411,10 @@
       var tipoEnsinoOk = tipoEnsinoInput.value !== '';
       var periodoOk = periodoInput.value.trim().length >= 1;
 
-      var formularioValido = instituicaoOk && cursoOk && tipoEnsinoOk && periodoOk;
-      academicoSubmitReveal.classList.toggle('is-visible', formularioValido);
-      academicoSubmitButton.disabled = !formularioValido;
-      return formularioValido;
+      var tudoOk = instituicaoOk && cursoOk && tipoEnsinoOk && periodoOk;
+      academicoNextWrap.classList.toggle('visivel', tudoOk);
+      academicoNextBtn.disabled = !tudoOk;
+      return tudoOk;
     }
 
     [instituicaoInput, cursoInput, cursoOutroInput, tipoEnsinoInput, periodoInput, matriculaInput].forEach(function (input) {
@@ -407,8 +423,8 @@
     if (tipoEnsinoInput) tipoEnsinoInput.addEventListener('change', validarAcademico);
 
     if (academicoForm) {
-      academicoForm.addEventListener('submit', function (event) {
-        event.preventDefault();
+      academicoForm.addEventListener('submit', function (e) {
+        e.preventDefault();
         if (validarAcademico()) {
           perfilData.instituicao = instituicaoInput.value.trim();
           perfilData.curso = cursoEscolhido();
@@ -420,23 +436,24 @@
         }
       });
     }
-    var atributosSubmitReveal = document.getElementById('atributos-submit-reveal');
-    var atributosSubmitButton = document.getElementById('atributos-submit-button');
-// pausa pra dormir
-// continuando
+
+    var attrsNextWrap = document.getElementById('atributos-avancar-envoltorio');
+    var attrsNextBtn = document.getElementById('atributos-avancar-botao');
+
     function validarSelecaoAtributos() {
       var algumSelecionado =
-        (atributosCursoGrid && atributosCursoGrid.querySelectorAll('.atributo-chip.is-selected').length > 0) ||
-        (atributosGeraisGrid && atributosGeraisGrid.querySelectorAll('.atributo-chip.is-selected').length > 0);
-      atributosSubmitReveal.classList.toggle('is-visible', algumSelecionado);
-      atributosSubmitButton.disabled = !algumSelecionado;
-    }
-    function slugify(texto) {
-      return texto.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase().replace(/[^chaveAtributo-z0-9]+/g, '-').replace(/(^-+|-+$)/g, '');
+        (attrsGridCurso && attrsGridCurso.querySelectorAll('.chip-atributo.selecionado').length > 0) ||
+        (attrsGridGeral && attrsGridGeral.querySelectorAll('.chip-atributo.selecionado').length > 0);
+      attrsNextWrap.classList.toggle('visivel', algumSelecionado);
+      attrsNextBtn.disabled = !algumSelecionado;
     }
 
-    var ATRIBUTOS_POR_CURSO = {
+    function slugify(texto) {
+      return texto.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-+|-+$)/g, '');
+    }
+
+    var CURSO_ATRIBUTOS = {
       'Administração': ['Planejamento estratégico', 'Gestão de projetos', 'Análise de indicadores (KPIs)', 'Elaboração de relatórios gerenciais', 'Gestão de processos', 'Negociação', 'Gestão financeira básica', 'Atendimento a fornecedores', 'Organização de rotinas administrativas', 'Uso de sistemas ERP'],
       'Ciência da Computação': ['Lógica de programação', 'Desenvolvimento web', 'Banco de dados', 'Estruturas de dados', 'Versionamento de código (Git)', 'Testes de software', 'Metodologias ágeis', 'Segurança da informação básica', 'Resolução de bugs', 'Documentação técnica'],
       'Informática': ['Suporte técnico', 'Manutenção de computadores', 'Redes de computadores', 'Instalação de sistemas operacionais', 'Configuração de periféricos', 'Backup e recuperação de dados', 'Atendimento ao usuário (help desk)', 'Segurança digital básica', 'Automação de tarefas simples', 'Diagnóstico de falhas em hardware'],
@@ -455,15 +472,15 @@
       'Meio Ambiente': ['Licenciamento ambiental', 'Gestão de resíduos', 'Educação ambiental', 'Monitoramento ambiental', 'Normas ambientais (legislação)', 'Elaboração de relatórios ambientais', 'Sustentabilidade', 'Coleta de dados de campo', 'Análise de impacto ambiental', 'Reciclagem e logística reversa']
     };
 
-    var ATRIBUTOS_GERAIS = ['Bom diálogo', 'Carismático/a', 'Proativo/a', 'Organizado/a', 'Trabalho em equipe', 'Liderança', 'Criatividade', 'Atenção aos detalhes', 'Pontualidade', 'Adaptável a mudanças', 'Empatia', 'Resiliência', 'Boa comunicação escrita', 'Pensamento crítico', 'Boa oratória', 'Iniciativa', 'Ética profissional', 'Gestão do tempo', 'Facilidade com números', 'Raciocínio lógico', 'Facilidade de aprendizado', 'Curiosidade', 'Persistência', 'Escuta ativa', 'Trabalho sob pressão', 'Flexibilidade de horário', 'Foco em resultados', 'Assiduidade', 'Autoconfiança', 'Colaboração', 'Multitarefas', 'Inglês básico', 'Inglês intermediário', 'Inglês avançado', 'Espanhol', 'Excel avançado', 'CNH categoria B', 'Disponibilidade de manhã', 'Disponibilidade de tarde', 'Disponibilidade integral'];
+    var GERAL_ATRIBUTOS_LISTA = ['Bom diálogo', 'Carismático/a', 'Proativo/a', 'Organizado/a', 'Trabalho em equipe', 'Liderança', 'Criatividade', 'Atenção aos detalhes', 'Pontualidade', 'Adaptável a mudanças', 'Empatia', 'Resiliência', 'Boa comunicação escrita', 'Pensamento crítico', 'Boa oratória', 'Iniciativa', 'Ética profissional', 'Gestão do tempo', 'Facilidade com números', 'Raciocínio lógico', 'Facilidade de aprendizado', 'Curiosidade', 'Persistência', 'Escuta ativa', 'Trabalho sob pressão', 'Flexibilidade de horário', 'Foco em resultados', 'Assiduidade', 'Autoconfiança', 'Colaboração', 'Multitarefas', 'Inglês básico', 'Inglês intermediário', 'Inglês avançado', 'Espanhol', 'Excel avançado', 'CNH categoria B', 'Disponibilidade de manhã', 'Disponibilidade de tarde', 'Disponibilidade integral'];
 
-    var ROTULOS_ATRIBUTOS_GERAIS = {};
-    ATRIBUTOS_GERAIS.forEach(function (label) {
-      ROTULOS_ATRIBUTOS_GERAIS['g-' + slugify(label)] = label;
+    var MAPA_GERAL = {};
+    GERAL_ATRIBUTOS_LISTA.forEach(function (label) {
+      MAPA_GERAL['g-' + slugify(label)] = label;
     });
 
-    function rotulosAtributosDoCurso(curso) {
-      var lista = ATRIBUTOS_POR_CURSO[curso] || [];
+    function mapaDoCurso(curso) {
+      var lista = CURSO_ATRIBUTOS[curso] || [];
       var mapa = {};
       var prefixo = 'c-' + slugify(curso || 'geral') + '-';
       lista.forEach(function (label) {
@@ -472,55 +489,56 @@
       return mapa;
     }
 
-    function atributoChipHtml(key, label) {
-      return '<button type="button" class="atributo-chip" data-atributo="' + key + '"><svg class="chip-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>' + label + '</span></button>';
+    function chipHTML(key, label) {
+      return '<button type="button" class="chip-atributo" data-attr="' + key + '"><svg class="chip-marca" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>' + label + '</span></button>';
     }
 
-    var atributosGeraisGrid = document.getElementById('atributos-gerais-grid');
-    var atributosCursoGrid = document.getElementById('atributos-curso-grid');
-    var atributosCursoSubtitle = document.getElementById('atributos-curso-subtitle');
-    var vagaRequisitosGrid = document.getElementById('vaga-requisitos-grid');
+    var attrsGridGeral = document.getElementById('grade-atributos-geral');
+    var attrsGridCurso = document.getElementById('grade-atributos-curso');
+    var attrsCursoSub = document.getElementById('atributos-curso-sub');
+    var vagaAttrsGrid = document.getElementById('vaga-grade-atributos');
 
-    function bindChipToggle(container, onToggle) {
+    function attachChipToggle(container, onToggle) {
       if (!container) return;
-      container.querySelectorAll('.atributo-chip').forEach(function (chip) {
+      container.querySelectorAll('.chip-atributo').forEach(function (chip) {
         if (chip.dataset.bound) return;
         chip.dataset.bound = '1';
         chip.addEventListener('click', function () {
-          chip.classList.toggle('is-selected');
+          chip.classList.toggle('selecionado');
           if (onToggle) onToggle();
         });
       });
     }
-    var atributosGeraisHtml = ATRIBUTOS_GERAIS.map(function (label) {
-      return atributoChipHtml('g-' + slugify(label), label);
-    }).join('');
-    if (atributosGeraisGrid) { atributosGeraisGrid.innerHTML = atributosGeraisHtml; bindChipToggle(atributosGeraisGrid, validarSelecaoAtributos); }
-    if (vagaRequisitosGrid) { vagaRequisitosGrid.innerHTML = atributosGeraisHtml; }
 
-    var rotulosAtributos = Object.assign({}, ROTULOS_ATRIBUTOS_GERAIS);
-    var chavesAtributos = Object.keys(rotulosAtributos);
+    var GERAL_HTML = GERAL_ATRIBUTOS_LISTA.map(function (label) {
+      return chipHTML('g-' + slugify(label), label);
+    }).join('');
+    if (attrsGridGeral) { attrsGridGeral.innerHTML = GERAL_HTML; attachChipToggle(attrsGridGeral, validarSelecaoAtributos); }
+    if (vagaAttrsGrid) { vagaAttrsGrid.innerHTML = GERAL_HTML; }
+
+    var ATTR_LABELS = Object.assign({}, MAPA_GERAL);
+    var ALL_ATTR_KEYS = Object.keys(ATTR_LABELS);
 
     function renderAtributosCurso(curso) {
-      if (atributosCursoSubtitle) atributosCursoSubtitle.textContent = curso ? ('Baseados no curso: ' + curso) : '';
-      if (!atributosCursoGrid) return;
-      var lista = ATRIBUTOS_POR_CURSO[curso];
+      if (attrsCursoSub) attrsCursoSub.textContent = curso ? ('Baseados no curso: ' + curso) : '';
+      if (!attrsGridCurso) return;
+      var lista = CURSO_ATRIBUTOS[curso];
       if (!lista) {
-        atributosCursoGrid.innerHTML = '<p class="empty-state">Ainda não temos atributos específicos pra esse curso — marque os atributos gerais abaixo.</p>';
-        rotulosAtributos = Object.assign({}, ROTULOS_ATRIBUTOS_GERAIS);
-        chavesAtributos = Object.keys(rotulosAtributos);
+        attrsGridCurso.innerHTML = '<p class="estado-vazio">Ainda não temos atributos específicos pra esse curso — marque os atributos gerais abaixo.</p>';
+        ATTR_LABELS = Object.assign({}, MAPA_GERAL);
+        ALL_ATTR_KEYS = Object.keys(ATTR_LABELS);
         return;
       }
-      var mapa = rotulosAtributosDoCurso(curso);
-      atributosCursoGrid.innerHTML = Object.keys(mapa).map(function (key) { return atributoChipHtml(key, mapa[key]); }).join('');
-      bindChipToggle(atributosCursoGrid, validarSelecaoAtributos);
-      rotulosAtributos = Object.assign({}, ROTULOS_ATRIBUTOS_GERAIS, mapa);
-      chavesAtributos = Object.keys(rotulosAtributos);
+      var mapa = mapaDoCurso(curso);
+      attrsGridCurso.innerHTML = Object.keys(mapa).map(function (key) { return chipHTML(key, mapa[key]); }).join('');
+      attachChipToggle(attrsGridCurso, validarSelecaoAtributos);
+      ATTR_LABELS = Object.assign({}, MAPA_GERAL, mapa);
+      ALL_ATTR_KEYS = Object.keys(ATTR_LABELS);
     }
 
-    var DADOS_POR_CURSO = {
+    var AREA_DATA_POR_CURSO = {
       'Administração': { area: 'Administração', hours: '30h semanais', titles: ['Estágio em Administração de Empresas', 'Estágio em Processos Administrativos', 'Estágio em Compras', 'Estágio em Gestão de Contratos', 'Estágio em Planejamento Administrativo'], companies: ['Cerrado Sistemas', 'Baobá Corp', 'Sertão Digital', 'Litoral Norte S.A.', 'Serra Verde Engenharia'] },
-      'Ciência da Computaçãp': { area: 'Tecnologia', hours: '20h semanais', titles: ['Estágio em Desenvolvimento de Software', 'Estágio em Desenvolvimento Web', 'Estágio em Ciência de Dados', 'Estágio em DevOps', 'Estágio em Testes de Software'], companies: ['Cajuína Tech', 'Pampa Software', 'Amazônia Cloud', 'Aroeira Sistemas', 'Ipê Labs'] },
+      'Ciência da Computação': { area: 'Tecnologia', hours: '20h semanais', titles: ['Estágio em Desenvolvimento de Software', 'Estágio em Desenvolvimento Web', 'Estágio em Ciência de Dados', 'Estágio em DevOps', 'Estágio em Testes de Software'], companies: ['Cajuína Tech', 'Pampa Software', 'Amazônia Cloud', 'Aroeira Sistemas', 'Ipê Labs'] },
       'Informática': { area: 'Tecnologia', hours: '20h semanais', titles: ['Estágio em Suporte de TI', 'Estágio em Infraestrutura de TI', 'Estágio em Redes', 'Estágio em Help Desk'], companies: ['Cajuína Tech', 'Litoral Norte S.A.', 'Aroeira Sistemas'] },
       'Contabilidade': { area: 'Finanças', hours: '30h semanais', titles: ['Estágio em Contabilidade', 'Estágio Fiscal e Tributário', 'Estágio em Contas a Pagar/Receber', 'Estágio em Auditoria Interna'], companies: ['Contmax Contabilidade', 'Cerrado Sistemas', 'Baobá Corp', 'Sertão Digital'] },
       'Enfermagem': { area: 'Saúde', hours: '24h semanais', titles: ['Estágio em Enfermagem', 'Estágio em Cuidados de Saúde', 'Estágio em Atendimento Ambulatorial', 'Estágio em Enfermagem Hospitalar'], companies: ['Clínica Vida Nova', 'Hospital Rio Doce', 'Saúde Sertão', 'Hospital Baobá'] },
@@ -536,43 +554,44 @@
       'Química': { area: 'Química', hours: '20h semanais', titles: ['Estágio em Laboratório Químico', 'Estágio em Controle de Qualidade', 'Estágio em Análises Químicas'], companies: ['Cerrado Química', 'Amazônia Cloud', 'Serra Verde Engenharia'] },
       'Meio Ambiente': { area: 'Meio Ambiente', hours: '25h semanais', titles: ['Estágio em Gestão Ambiental', 'Estágio em Licenciamento Ambiental', 'Estágio em Sustentabilidade'], companies: ['Serra Verde Engenharia', 'Amazônia Cloud', 'Litoral Norte Construtora'] }
     };
-    var DADOS_GENERICOS = { area: 'Multifuncional', hours: '30h semanais', titles: ['Estágio Administrativo', 'Estágio de Apoio Multifuncional', 'Programa de Estágio Trainee', 'Estágio em Atendimento', 'Estágio em Projetos Internos', 'Estágio em Operações'], companies: ['Cerrado Sistemas', 'Baobá Corp', 'Sertão Digital', 'Litoral Norte S.A.', 'Amazônia Cloud', 'Ipê Labs'] };
-    var CIDADES = ['Natal, RN', 'Fortaleza, CE', 'Recife, PE', 'João Pessoa, PB', 'Mossoró, RN', 'Parnamirim, RN', 'Salvador, BA'];
-    var MODALIDADES = ['Remoto', 'Híbrido', 'Presencial'];
-    var PRAZOS = ['18/09', '22/09', '25/09', '28/09', '30/09', '02/10', '05/10', '08/10', '12/10', '15/10'];
+    var GENERIC_AREA = { area: 'Multifuncional', hours: '30h semanais', titles: ['Estágio Administrativo', 'Estágio de Apoio Multifuncional', 'Programa de Estágio Trainee', 'Estágio em Atendimento', 'Estágio em Projetos Internos', 'Estágio em Operações'], companies: ['Cerrado Sistemas', 'Baobá Corp', 'Sertão Digital', 'Litoral Norte S.A.', 'Amazônia Cloud', 'Ipê Labs'] };
+    var CITIES = ['Natal, RN', 'Fortaleza, CE', 'Recife, PE', 'João Pessoa, PB', 'Mossoró, RN', 'Parnamirim, RN', 'Salvador, BA'];
+    var MODALITIES = ['Remoto', 'Híbrido', 'Presencial'];
+    var DEADLINES = ['18/09', '22/09', '25/09', '28/09', '30/09', '02/10', '05/10', '08/10', '12/10', '15/10'];
 
     var vagasGeradas = [];
 
     function embaralhar(lista) {
       var copia = lista.slice();
       for (var i = copia.length - 1; i > 0; i--) {
-        var indiceSorteado = Math.floor(Math.random() * (i + 1));
-        [copia[i], copia[indiceSorteado]] = [copia[indiceSorteado], copia[i]];
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = copia[i]; copia[i] = copia[j]; copia[j] = tmp;
       }
       return copia;
     }
 
-    function sortearVarios(lista, quantidade) {
-      return embaralhar(lista).slice(0, Math.max(0, Math.min(quantidade, lista.length)));
+    function amostrar(lista, n) {
+      return embaralhar(lista).slice(0, Math.max(0, Math.min(n, lista.length)));
     }
 
-    function sortearUm(lista) {
+    function escolherUm(lista) {
       return lista[Math.floor(Math.random() * lista.length)];
     }
 
     function iniciais(nome) {
-      var partes = nome.split(' ').filter(function (palavra) { return palavra.length && palavra[0] === palavra[0].toUpperCase(); });
+      var partes = nome.split(' ').filter(function (p) { return p.length && p[0] === p[0].toUpperCase(); });
       var base = partes.length ? partes : nome.split(' ');
-      return base.slice(0, 2).map(function (palavra) { return palavra[0]; }).join('').toUpperCase();
+      return base.slice(0, 2).map(function (p) { return p[0]; }).join('').toUpperCase();
     }
 
     function construirVaga(atributosNecessarios, matchPct, evitarChaves) {
-      var dadosDoCurso = DADOS_POR_CURSO[perfilData.curso] || DADOS_GENERICOS;
+      var dados = AREA_DATA_POR_CURSO[perfilData.curso] || GENERIC_AREA;
+
       var tentativas = 0;
       var titulo, empresa, chave;
       do {
-        titulo = sortearUm(dadosDoCurso.titles);
-        empresa = sortearUm(dadosDoCurso.companies);
+        titulo = escolherUm(dados.titles);
+        empresa = escolherUm(dados.companies);
         chave = titulo + '|' + empresa;
         tentativas++;
       } while (evitarChaves && evitarChaves.has(chave) && tentativas < 20);
@@ -581,36 +600,38 @@
       return {
         titulo: titulo,
         empresa: empresa,
-        cidade: sortearUm(CIDADES),
-        modalidade: sortearUm(MODALIDADES),
-        horas: dadosDoCurso.hours,
-        area: dadosDoCurso.area,
+        cidade: escolherUm(CITIES),
+        modalidade: escolherUm(MODALITIES),
+        horas: dados.hours,
+        area: dados.area,
         bolsa: 400 + Math.floor(Math.random() * 13) * 50,
-        prazo: sortearUm(PRAZOS),
+        prazo: escolherUm(DEADLINES),
         logo: iniciais(empresa),
-        atributos: atributosNecessarios.map(function (chaveAtributo) { return rotulosAtributos[chaveAtributo] || chaveAtributo; }),
+        atributos: atributosNecessarios.map(function (a) { return ATTR_LABELS[a] || a; }),
         matchPct: matchPct
       };
     }
+
     function gerarVagas(selecionados) {
       var vagas = [];
-      var outros = chavesAtributos.filter(function (chaveAtributo) { return selecionados.indexOf(chaveAtributo) === -1; });
+      var outros = ALL_ATTR_KEYS.filter(function (a) { return selecionados.indexOf(a) === -1; });
       var usadas = new Set();
 
       for (var i = 0; i < 18; i++) {
-        var quantidadeAtributos = Math.max(1, Math.min(selecionados.length, 1 + Math.floor(Math.random() * 3)));
-        vagas.push(construirVaga(sortearVarios(selecionados, quantidadeAtributos), 100, usadas));
+        var k = Math.max(1, Math.min(selecionados.length, 1 + Math.floor(Math.random() * 3)));
+        vagas.push(construirVaga(amostrar(selecionados, k), 100, usadas));
       }
 
       for (var j = 0; j < 12; j++) {
-        var quantidadeMarcados = Math.max(1, Math.floor(Math.random() * (selecionados.length + 1)));
-        var quantidadeFaltantes = 1 + Math.floor(Math.random() * Math.min(3, Math.max(1, outros.length)));
-        var atributosMarcados = sortearVarios(selecionados, quantidadeMarcados);
-        var atributosFaltantes = sortearVarios(outros, quantidadeFaltantes);
-        var necessarios = atributosMarcados.concat(atributosFaltantes);
-        var matchPct = necessarios.length ? Math.round((atributosMarcados.length / necessarios.length) * 100) : 0;
-        if (matchPct >= 100) matchPct = 90;
-        vagas.push(construirVaga(necessarios, matchPct, usadas));
+
+        var m = Math.max(1, Math.floor(Math.random() * (selecionados.length + 1)));
+        var n = 1 + Math.floor(Math.random() * Math.min(3, Math.max(1, outros.length)));
+        var partA = amostrar(selecionados, m);
+        var partB = amostrar(outros, n);
+        var necessarios = partA.concat(partB);
+        var pct = necessarios.length ? Math.round((partA.length / necessarios.length) * 100) : 0;
+        if (pct >= 100) pct = 90;
+        vagas.push(construirVaga(necessarios, pct, usadas));
       }
 
       return vagas;
@@ -625,59 +646,59 @@
         .replace(/'/g, '&#39;');
     }
 
-    function vagaCardHTML(vaga) {
-      var classeMatch = vaga.matchPct === 100 ? '' : 'match-badge-partial';
-      var chipsAtributos = vaga.atributos.map(function (label) {
-        return '<span class="atributo-tag">' + escapeHtml(label) + '</span>';
+    function vagaCardHTML(v) {
+      var classeMatch = v.matchPct === 100 ? '' : 'compatibilidade-parcial';
+      var chipsAtributos = v.atributos.map(function (label) {
+        return '<span class="etiqueta-atributo">' + escapeHtml(label) + '</span>';
       }).join('');
       return '' +
-        '<li><article class="vaga-card" data-match="' + vaga.matchPct + '">' +
-          '<div class="vaga-details">' +
-          '<div class="empresa-logo">' + vaga.logo + '</div>' +
-          '<div>' +
-              '<h3>' + vaga.titulo + '</h3>' +
-             '<p class="vaga-subtitle">' + vaga.empresa + ' · ' + vaga.cidade + ' · ' + vaga.modalidade + '</p>' +
-         '<ul class="vaga-tags"><li class="info-tag">' + vaga.area + '</li><li class="info-tag info-tag-sun">' + vaga.horas + '</li><li class="info-tag info-tag-sun">Bolsa R$ ' + vaga.bolsa + '</li></ul>' +
-             '<div class="vaga-requisitos"><span class="vaga-requisitos-label">Atributos necessários:</span>' + chipsAtributos + '</div>' +
+        '<article class="vaga-cartao">' +
+          '<div class="vaga-main">' +
+            '<div class="vaga-logo">' + v.logo + '</div>' +
+            '<div>' +
+              '<h3>' + v.titulo + '</h3>' +
+              '<p style="margin:0;">' + v.empresa + ' · ' + v.cidade + ' · ' + v.modalidade + '</p>' +
+              '<div class="vaga-tags"><span class="etiqueta">' + v.area + '</span><span class="etiqueta etiqueta-sol">' + v.horas + '</span><span class="etiqueta etiqueta-sol">Bolsa R$ ' + v.bolsa + '</span></div>' +
+              '<div class="requisitos-atributos"><span class="requisitos-atributos-rotulo">Atributos necessários:</span>' + chipsAtributos + '</div>' +
               '<p class="vaga-aviso-legal">Esta oportunidade é de estágio conforme Lei 11.788/08. A contratação depende de assinatura de Termo de Compromisso de Estágio (TCE) entre aluno, empresa e instituição de ensino, e de Seguro Contra Acidentes Pessoais pago pela empresa. O OxenteVagas não é contratante.</p>' +
             '</div>' +
           '</div>' +
-          '<div class="vaga-aside">' +
-            '<span class="match-badge ' + classeMatch + '">' + vaga.matchPct + '% de match</span>' +
-            '<p class="vaga-prazo">Inscrições até ' + vaga.prazo + '</p>' +
-            '<div class="vaga-actions">' +
-              '<a href="#" class="button button-outline button-small" data-ver-empresa ' +
-                'data-empresa-nome="' + escapeHtml(vaga.empresa) + '" ' +
-                'data-empresa-area="' + escapeHtml(vaga.area) + '" ' +
-                'data-empresa-cidade="' + escapeHtml(vaga.cidade) + '" ' +
-                'data-empresa-modalidade="' + escapeHtml(vaga.modalidade) + '" ' +
-                'data-vaga-titulo="' + escapeHtml(vaga.titulo) + '" ' +
-                'data-vaga-empresa="' + escapeHtml(vaga.empresa) + '" ' +
-                'data-vaga-match="' + vaga.matchPct + '">Ver empresa</a>' +
-              '<a href="#" class="button button-primary button-small" data-candidatar data-vaga-titulo="' + escapeHtml(vaga.titulo) + '" data-vaga-empresa="' + escapeHtml(vaga.empresa) + '" data-vaga-match="' + vaga.matchPct + '">Candidatar-se</a>' +
+          '<div class="vaga-meta">' +
+            '<span class="selo-compatibilidade ' + classeMatch + '">' + v.matchPct + '% de match</span>' +
+            '<p class="prazo">Inscrições até ' + v.prazo + '</p>' +
+            '<div class="vaga-meta-acoes">' +
+              '<a href="#" class="botao botao-contorno botao-pequeno" data-ver-empresa ' +
+                'data-empresa-nome="' + escapeHtml(v.empresa) + '" ' +
+                'data-empresa-area="' + escapeHtml(v.area) + '" ' +
+                'data-empresa-cidade="' + escapeHtml(v.cidade) + '" ' +
+                'data-empresa-modalidade="' + escapeHtml(v.modalidade) + '" ' +
+                'data-vaga-titulo="' + escapeHtml(v.titulo) + '" ' +
+                'data-vaga-empresa="' + escapeHtml(v.empresa) + '" ' +
+                'data-vaga-match="' + v.matchPct + '">Ver empresa</a>' +
+              '<a href="#" class="botao botao-primario botao-pequeno" data-candidatar data-vaga-titulo="' + escapeHtml(v.titulo) + '" data-vaga-empresa="' + escapeHtml(v.empresa) + '" data-vaga-match="' + v.matchPct + '">Candidatar-se</a>' +
             '</div>' +
           '</div>' +
-        '</article></li>';
+        '</article>';
     }
 
-    var vagasParaVoceGrid = document.getElementById('vagas-para-voce-grid');
-    var vagasTodasGrid = document.getElementById('vagas-todas-grid');
-    var countParaVoce = document.getElementById('count-para-voce');
-    var countTodasVagas = document.getElementById('count-todas-vagas');
+    var vagasParaVoceGrid = document.getElementById('grade-vagas-para-voce');
+    var vagasTodasGrid = document.getElementById('grade-vagas-todas');
+    var countParaVoce = document.getElementById('contagem-para-voce');
+    var countTodasVagas = document.getElementById('contagem-todas-vagas');
 
     function renderVagas() {
       if (!vagasParaVoceGrid || !vagasTodasGrid) return;
 
       if (!vagasGeradas.length) {
-        var mensagemVazia = '<li class="empty-state">Volte pra etapa de atributos pra gerarmos vagas com base no seu perfil.</li>';
-        vagasParaVoceGrid.innerHTML = mensagemVazia;
-        vagasTodasGrid.innerHTML = mensagemVazia;
+        var msg = '<p class="estado-vazio">Volte pra etapa de atributos pra gerarmos vagas com base no seu perfil.</p>';
+        vagasParaVoceGrid.innerHTML = msg;
+        vagasTodasGrid.innerHTML = msg;
         if (countParaVoce) countParaVoce.textContent = 'Nenhuma vaga gerada ainda';
         if (countTodasVagas) countTodasVagas.textContent = 'Nenhuma vaga gerada ainda';
         return;
       }
 
-      var vagas100 = vagasGeradas.filter(function (vaga) { return vaga.matchPct === 100; });
+      var vagas100 = vagasGeradas.filter(function (v) { return v.matchPct === 100; });
 
       vagasParaVoceGrid.innerHTML = vagas100.map(vagaCardHTML).join('');
       vagasTodasGrid.innerHTML = vagasGeradas.map(vagaCardHTML).join('');
@@ -686,13 +707,13 @@
       if (countTodasVagas) countTodasVagas.textContent = vagasGeradas.length + ' vagas encontradas';
     }
 
-    if (atributosSubmitButton) {
-      atributosSubmitButton.addEventListener('click', function () {
-        if (!atributosSubmitButton.disabled) {
+    if (attrsNextBtn) {
+      attrsNextBtn.addEventListener('click', function () {
+        if (!attrsNextBtn.disabled) {
           var chipsSelecionados = [];
-          if (atributosCursoGrid) chipsSelecionados = chipsSelecionados.concat(Array.prototype.slice.call(atributosCursoGrid.querySelectorAll('.atributo-chip.is-selected')));
-          if (atributosGeraisGrid) chipsSelecionados = chipsSelecionados.concat(Array.prototype.slice.call(atributosGeraisGrid.querySelectorAll('.atributo-chip.is-selected')));
-          var selecionados = chipsSelecionados.map(function (chip) { return chip.dataset.atributo; });
+          if (attrsGridCurso) chipsSelecionados = chipsSelecionados.concat(Array.prototype.slice.call(attrsGridCurso.querySelectorAll('.chip-atributo.selecionado')));
+          if (attrsGridGeral) chipsSelecionados = chipsSelecionados.concat(Array.prototype.slice.call(attrsGridGeral.querySelectorAll('.chip-atributo.selecionado')));
+          var selecionados = chipsSelecionados.map(function (chip) { return chip.dataset.attr; });
           atributosSelecionados = selecionados;
           vagasGeradas = gerarVagas(selecionados);
           renderPerfil();
@@ -701,75 +722,79 @@
         }
       });
     }
-    var profileName = document.getElementById('profile-name');
-    var profileIdade = document.getElementById('profile-idade');
-    var profileCurso = document.getElementById('profile-curso');
-    var profileInstituicao = document.getElementById('profile-instituicao');
-    var profileAvatar = document.getElementById('profile-avatar-large');
-    var profileAvatarImage = document.getElementById('profile-avatar-img');
-    var profileAtributosList = document.getElementById('profile-attrs-list');
+
+    var profileNameEl = document.getElementById('perfil-nome');
+    var profileIdadeEl = document.getElementById('perfil-idade');
+    var profileCursoEl = document.getElementById('perfil-curso');
+    var profileInstituicaoEl = document.getElementById('perfil-instituicao');
+    var profileAvatarWrap = document.getElementById('perfil-avatar-grande');
+    var profileAvatarImg = document.getElementById('perfil-avatar-img');
+    var profileAttrsList = document.getElementById('perfil-lista-atributos');
 
     function renderPerfil() {
-      if (!profileName) return;
-      profileName.textContent = perfilData.nome || 'Seu perfil';
-      profileIdade.textContent = perfilData.idade || '—';
-      if (profileCurso) profileCurso.textContent = perfilData.curso || '—';
-      if (profileInstituicao) profileInstituicao.textContent = perfilData.instituicao || '—';
+      if (!profileNameEl) return;
+      profileNameEl.textContent = perfilData.nome || 'Seu perfil';
+      profileIdadeEl.textContent = perfilData.idade || '—';
+      if (profileCursoEl) profileCursoEl.textContent = perfilData.curso || '—';
+      if (profileInstituicaoEl) profileInstituicaoEl.textContent = perfilData.instituicao || '—';
       if (perfilData.foto) {
-        profileAvatarImage.src = perfilData.foto;
-        profileAvatar.classList.add('has-image');
+        profileAvatarImg.src = perfilData.foto;
+        profileAvatarWrap.classList.add('com-imagem');
       } else {
-        profileAvatar.classList.remove('has-image');
+        profileAvatarWrap.classList.remove('com-imagem');
       }
 
-      if (profileAtributosList) {
+      if (profileAttrsList) {
         if (atributosSelecionados.length) {
-          profileAtributosList.innerHTML = atributosSelecionados.map(function (chaveAtributo) {
-            return '<span class="atributo-tag">' + (rotulosAtributos[chaveAtributo] || chaveAtributo) + '</span>';
+          profileAttrsList.innerHTML = atributosSelecionados.map(function (a) {
+            return '<span class="etiqueta-atributo">' + (ATTR_LABELS[a] || a) + '</span>';
           }).join('');
         } else {
-          profileAtributosList.innerHTML = '<p class="profile-atributos-empty">Nenhum atributo selecionado ainda.</p>';
+          profileAttrsList.innerHTML = '<p class="perfil-atributos-vazio">Nenhum atributo selecionado ainda.</p>';
         }
       }
     }
-    var passwordToggleButton = document.getElementById('password-toggle-button');
-    var passwordPanel = document.getElementById('password-panel');
-    if (passwordToggleButton && passwordPanel) {
-      passwordToggleButton.addEventListener('click', function () {
-        var aberto = passwordPanel.classList.toggle('is-open');
-        passwordToggleButton.setAttribute('aria-expanded', aberto ? 'true' : 'false');
-        passwordToggleButton.textContent = aberto ? 'Cancelar' : 'Alterar senha';
+
+    var toggleSenhaBtn = document.getElementById('alternar-senha-botao');
+    var passwordPanel = document.getElementById('painel-senha');
+    if (toggleSenhaBtn && passwordPanel) {
+      toggleSenhaBtn.addEventListener('click', function () {
+        var aberto = passwordPanel.classList.toggle('aberto');
+        toggleSenhaBtn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+        toggleSenhaBtn.textContent = aberto ? 'Cancelar' : 'Alterar senha';
       });
     }
-    document.querySelectorAll('.tab-button').forEach(function (button) {
-      button.addEventListener('click', function () {
-        var container = button.closest('.screen') || document;
-        var botoesLocais = container.querySelectorAll('.tab-button');
-        var painelLocais = container.querySelectorAll('.tab-panel');
-        botoesLocais.forEach(function (siblingButton) { siblingButton.classList.remove('is-active'); siblingButton.setAttribute('aria-selected', 'false'); });
-        painelLocais.forEach(function (panel) { panel.classList.remove('is-active'); });
-        button.classList.add('is-active');
-        button.setAttribute('aria-selected', 'true');
-        var alvo = container.querySelector('[data-tab-panel="' + button.dataset.tab + '"]');
-        if (alvo) alvo.classList.add('is-active');
+
+    document.querySelectorAll('.botao-aba').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var container = btn.closest('section.pagina') || document;
+        var botoesLocais = container.querySelectorAll('.botao-aba');
+        var painelLocais = container.querySelectorAll('.painel-aba');
+        botoesLocais.forEach(function (b) { b.classList.remove('ativo'); b.setAttribute('aria-selected', 'false'); });
+        painelLocais.forEach(function (p) { p.classList.remove('ativo'); });
+        btn.classList.add('ativo');
+        btn.setAttribute('aria-selected', 'true');
+        var alvo = container.querySelector('[data-tab-panel="' + btn.dataset.tab + '"]');
+        if (alvo) alvo.classList.add('ativo');
       });
     });
+
     var candidaturas = [];
     var candidaturaAtual = null;
     var modoAtual = 'pdf';
 
     var candidaturaModal = document.getElementById('candidatura-modal');
-    var candidaturaModalCloseButton = document.getElementById('candidatura-modal-close');
+    var candidaturaModalClose = document.getElementById('candidatura-modal-fechar');
     var candidaturaVagaInfo = document.getElementById('candidatura-vaga-info');
-    var submissionModeButtons = document.querySelectorAll('.submission-mode-button');
-    var submissionModePanels = document.querySelectorAll('.submission-mode-panel');
-    var candidaturaPdfInput = document.getElementById('candidatura-pdf-input');
-    var candidaturaFileName = document.getElementById('candidatura-file-name');
+    var modeButtons = document.querySelectorAll('.botao-modo');
+    var modePanels = document.querySelectorAll('.candidatura-painel-modo');
+    var candidaturaPdfInput = document.getElementById('candidatura-pdf-entrada');
+    var candidaturaFileName = document.getElementById('candidatura-nome-arquivo');
     var candidaturaTexto = document.getElementById('candidatura-texto');
     var candidaturaMensagem = document.getElementById('candidatura-mensagem');
     var candidaturaAviso = document.getElementById('candidatura-aviso');
-    var candidaturaSubmitButton = document.getElementById('candidatura-submit-button');
-    var candidaturasList = document.getElementById('candidaturas-list');
+    var candidaturaEnviarBtn = document.getElementById('candidatura-enviar-botao');
+    var candidaturasList = document.getElementById('candidaturas-lista');
 
     function abrirCandidaturaModal(titulo, empresa, matchPct) {
       if (!candidaturaModal) return;
@@ -777,38 +802,40 @@
       candidaturaVagaInfo.textContent = titulo + ' — ' + empresa;
 
       modoAtual = 'pdf';
-      submissionModeButtons.forEach(function (modeButton) { modeButton.classList.toggle('is-active', modeButton.dataset.modo === 'pdf'); });
-      submissionModePanels.forEach(function (panel) { panel.classList.toggle('is-active', panel.dataset.modoPanel === 'pdf'); });
+      modeButtons.forEach(function (b) { b.classList.toggle('ativo', b.dataset.modo === 'pdf'); });
+      modePanels.forEach(function (p) { p.classList.toggle('ativo', p.dataset.modoPanel === 'pdf'); });
 
       candidaturaPdfInput.value = '';
       candidaturaFileName.textContent = '';
       candidaturaTexto.value = '';
       candidaturaMensagem.value = '';
-      candidaturaAviso.classList.remove('is-visible');
+      candidaturaAviso.classList.remove('visivel');
 
-      candidaturaModal.classList.add('is-open');
+      candidaturaModal.classList.add('aberto');
     }
 
     function fecharCandidaturaModal() {
-      if (candidaturaModal) candidaturaModal.classList.remove('is-open');
+      if (candidaturaModal) candidaturaModal.classList.remove('aberto');
       candidaturaAtual = null;
     }
-    document.addEventListener('click', function (event) {
-      var botaoCandidatar = event.target.closest('[data-candidatar]');
+
+    document.addEventListener('click', function (e) {
+      var botaoCandidatar = e.target.closest('[data-candidatar]');
       if (botaoCandidatar) {
-        event.preventDefault();
+        e.preventDefault();
         abrirCandidaturaModal(botaoCandidatar.dataset.vagaTitulo, botaoCandidatar.dataset.vagaEmpresa, botaoCandidatar.dataset.vagaMatch);
       }
     });
 
-    if (candidaturaModalCloseButton) {
-      candidaturaModalCloseButton.addEventListener('click', fecharCandidaturaModal);
+    if (candidaturaModalClose) {
+      candidaturaModalClose.addEventListener('click', fecharCandidaturaModal);
     }
     if (candidaturaModal) {
-      candidaturaModal.addEventListener('click', function (event) {
-        if (event.target === candidaturaModal) fecharCandidaturaModal();
+      candidaturaModal.addEventListener('click', function (e) {
+        if (e.target === candidaturaModal) fecharCandidaturaModal();
       });
     }
+
     var DESCRICOES_EMPRESA = [
       '{empresa} é uma empresa do setor de {area} que valoriza o desenvolvimento de jovens talentos e investe em programas de estágio estruturados.',
       '{empresa} atua na área de {area}, com um ambiente colaborativo e foco em inovação, oferecendo mentoria constante para quem está começando a carreira.',
@@ -827,39 +854,39 @@
     }
 
     var empresaModal = document.getElementById('empresa-modal');
-    var empresaModalCloseButton = document.getElementById('empresa-modal-close');
+    var empresaModalClose = document.getElementById('empresa-modal-fechar');
     var empresaModalLogo = document.getElementById('empresa-modal-logo');
     var empresaModalNome = document.getElementById('empresa-modal-nome');
     var empresaModalLocal = document.getElementById('empresa-modal-local');
     var empresaModalArea = document.getElementById('empresa-modal-area');
     var empresaModalModalidade = document.getElementById('empresa-modal-modalidade');
     var empresaModalSobre = document.getElementById('empresa-modal-sobre');
-    var empresaModalDismissButton = document.getElementById('empresa-modal-dismiss-button');
-    var empresaModalApplyButton = document.getElementById('empresa-modal-apply-button');
+    var empresaModalFecharBtn = document.getElementById('empresa-modal-fechar-botao');
+    var empresaModalCandidatarBtn = document.getElementById('empresa-modal-candidatar-botao');
     var empresaVagaAtual = null;
 
-    function abrirEmpresaModal(empresaInfo) {
+    function abrirEmpresaModal(dados) {
       if (!empresaModal) return;
-      empresaVagaAtual = { titulo: empresaInfo.vagaTitulo, empresa: empresaInfo.vagaEmpresa, matchPct: empresaInfo.matchPct };
+      empresaVagaAtual = { titulo: dados.vagaTitulo, empresa: dados.vagaEmpresa, matchPct: dados.matchPct };
 
-      empresaModalLogo.textContent = iniciais(empresaInfo.nome);
-      empresaModalNome.textContent = empresaInfo.nome;
-      empresaModalLocal.textContent = empresaInfo.cidade;
-      empresaModalArea.textContent = empresaInfo.area;
-      empresaModalModalidade.textContent = empresaInfo.modalidade;
-      empresaModalSobre.textContent = gerarDescricaoEmpresa(empresaInfo.nome, empresaInfo.area);
+      empresaModalLogo.textContent = iniciais(dados.nome);
+      empresaModalNome.textContent = dados.nome;
+      empresaModalLocal.textContent = dados.cidade;
+      empresaModalArea.textContent = dados.area;
+      empresaModalModalidade.textContent = dados.modalidade;
+      empresaModalSobre.textContent = gerarDescricaoEmpresa(dados.nome, dados.area);
 
-      empresaModal.classList.add('is-open');
+      empresaModal.classList.add('aberto');
     }
 
     function fecharEmpresaModal() {
-      if (empresaModal) empresaModal.classList.remove('is-open');
+      if (empresaModal) empresaModal.classList.remove('aberto');
     }
-// vamo chegar em mil mesmo?
-    document.addEventListener('click', function (event) {
-      var botaoVerEmpresa = event.target.closest('[data-ver-empresa]');
+
+    document.addEventListener('click', function (e) {
+      var botaoVerEmpresa = e.target.closest('[data-ver-empresa]');
       if (botaoVerEmpresa) {
-        event.preventDefault();
+        e.preventDefault();
         abrirEmpresaModal({
           nome: botaoVerEmpresa.dataset.empresaNome,
           area: botaoVerEmpresa.dataset.empresaArea,
@@ -872,28 +899,28 @@
       }
     });
 
-    if (empresaModalCloseButton) empresaModalCloseButton.addEventListener('click', fecharEmpresaModal);
-    if (empresaModalDismissButton) empresaModalDismissButton.addEventListener('click', fecharEmpresaModal);
+    if (empresaModalClose) empresaModalClose.addEventListener('click', fecharEmpresaModal);
+    if (empresaModalFecharBtn) empresaModalFecharBtn.addEventListener('click', fecharEmpresaModal);
     if (empresaModal) {
-      empresaModal.addEventListener('click', function (event) {
-        if (event.target === empresaModal) fecharEmpresaModal();
+      empresaModal.addEventListener('click', function (e) {
+        if (e.target === empresaModal) fecharEmpresaModal();
       });
     }
 
-    if (empresaModalApplyButton) {
-      empresaModalApplyButton.addEventListener('click', function () {
+    if (empresaModalCandidatarBtn) {
+      empresaModalCandidatarBtn.addEventListener('click', function () {
         if (!empresaVagaAtual) return;
         fecharEmpresaModal();
         abrirCandidaturaModal(empresaVagaAtual.titulo, empresaVagaAtual.empresa, empresaVagaAtual.matchPct);
       });
     }
 
-    submissionModeButtons.forEach(function (button) {
-      button.addEventListener('click', function () {
-        modoAtual = button.dataset.modo;
-        submissionModeButtons.forEach(function (modeButton) { modeButton.classList.toggle('is-active', modeButton === button); });
-        submissionModePanels.forEach(function (panel) { panel.classList.toggle('is-active', panel.dataset.modoPanel === modoAtual); });
-        candidaturaAviso.classList.remove('is-visible');
+    modeButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        modoAtual = btn.dataset.modo;
+        modeButtons.forEach(function (b) { b.classList.toggle('ativo', b === btn); });
+        modePanels.forEach(function (p) { p.classList.toggle('ativo', p.dataset.modoPanel === modoAtual); });
+        candidaturaAviso.classList.remove('visivel');
       });
     });
 
@@ -904,11 +931,11 @@
       });
     }
 
-    if (candidaturaSubmitButton) {
-      candidaturaSubmitButton.addEventListener('click', function () {
+    if (candidaturaEnviarBtn) {
+      candidaturaEnviarBtn.addEventListener('click', function () {
         if (!candidaturaAtual) return;
 
-        var novaCandidatura = {
+        var nova = {
           id: 'cand-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
           vagaTitulo: candidaturaAtual.titulo,
           vagaEmpresa: candidaturaAtual.empresa,
@@ -931,95 +958,97 @@
           var file = candidaturaPdfInput.files && candidaturaPdfInput.files[0];
           if (!file) {
             candidaturaAviso.textContent = 'Selecione um arquivo PDF antes de enviar.';
-            candidaturaAviso.classList.add('is-visible');
+            candidaturaAviso.classList.add('visivel');
             return;
           }
-          novaCandidatura.nomeArquivo = file.name;
-          novaCandidatura.tamanho = Math.max(1, Math.round(file.size / 1024));
+          nova.nomeArquivo = file.name;
+          nova.tamanho = Math.max(1, Math.round(file.size / 1024));
         } else {
           var texto = candidaturaTexto.value.trim();
           if (!texto) {
             candidaturaAviso.textContent = 'Escreva seu currículo antes de enviar.';
-            candidaturaAviso.classList.add('is-visible');
+            candidaturaAviso.classList.add('visivel');
             return;
           }
-          novaCandidatura.conteudo = texto;
+          nova.conteudo = texto;
         }
 
-        candidaturas.unshift(novaCandidatura);
+        candidaturas.unshift(nova);
         renderCandidaturas();
         renderCandidatosEmpresa();
         fecharCandidaturaModal();
-        var abaGerenciar = document.querySelector('.tab-button[data-tab="gerenciar-curriculos"]');
+
+        var abaGerenciar = document.querySelector('.botao-aba[data-tab="gerenciar-curriculos"]');
         if (abaGerenciar) abaGerenciar.click();
       });
     }
 
     var STATUS_LABEL = { pendente: 'Em análise', aceito: 'Aceita', rejeitado: 'Não selecionada' };
 
-    function candidaturaItemHTML(candidatura) {
-      var descricao = candidatura.tipo === 'pdf'
-        ? 'Currículo em PDF enviado: <strong>' + escapeHtml(candidatura.nomeArquivo) + '</strong> · ' + candidatura.tamanho + ' KB'
-        : 'Currículo escrito à mão · ' + escapeHtml(candidatura.conteudo.slice(0, 90)) + (candidatura.conteudo.length > 90 ? '…' : '');
+    function candidaturaItemHTML(c) {
+      var descricao = c.tipo === 'pdf'
+        ? 'Currículo em PDF enviado: <strong>' + escapeHtml(c.nomeArquivo) + '</strong> · ' + c.tamanho + ' KB'
+        : 'Currículo escrito à mão · ' + escapeHtml(c.conteudo.slice(0, 90)) + (c.conteudo.length > 90 ? '…' : '');
 
-      var tceAviso = candidatura.status === 'aceito'
-        ? '<div class="tce-alert">A empresa aceitou sua candidatura. Acesse a Central de Formalização pra tratar do TCE e do seguro. <br><button type="button" class="button button-outline button-small tce-alert-action" data-abrir-central="' + candidatura.id + '">Abrir central de formalização</button></div>'
+      var tceAviso = c.status === 'aceito'
+        ? '<div class="tce-alerta">A empresa aceitou sua candidatura. Acesse a Central de Formalização pra tratar do TCE e do seguro. <br><button type="button" class="botao botao-contorno botao-pequeno" style="margin-top:8px;" data-abrir-central="' + c.id + '">Abrir central de formalização</button></div>'
         : '';
 
       return '' +
-        '<article class="candidatura-item" data-candidatura-id="' + candidatura.id + '">' +
-          '<div class="item-main">' +
-            '<div class="item-icon">' +
+        '<div class="curriculo-item">' +
+          '<div class="curriculo-principal">' +
+            '<div class="curriculo-icone">' +
               '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>' +
             '</div>' +
             '<div>' +
-              '<p class="item-title">' + escapeHtml(candidatura.vagaTitulo) + ' — ' + escapeHtml(candidatura.vagaEmpresa) + '</p>' +
-              '<p class="item-meta">' + descricao + '</p>' +
+              '<p class="curriculo-nome">' + escapeHtml(c.vagaTitulo) + ' — ' + escapeHtml(c.vagaEmpresa) + '</p>' +
+              '<p class="curriculo-meta">' + descricao + '</p>' +
               tceAviso +
             '</div>' +
           '</div>' +
-          '<div class="item-actions">' +
-            '<span class="status-badge ' + candidatura.status + '">' + STATUS_LABEL[candidatura.status] + '</span>' +
-            '<button type="button" data-remove-candidatura="' + candidatura.id + '">Remover</button>' +
+          '<div class="curriculo-acoes">' +
+            '<span class="selo-status ' + c.status + '">' + STATUS_LABEL[c.status] + '</span>' +
+            '<button type="button" data-remove-candidatura="' + c.id + '">Remover</button>' +
           '</div>' +
-        '</article>';
+        '</div>';
     }
 
     function renderCandidaturas() {
       if (!candidaturasList) return;
       if (!candidaturas.length) {
-        candidaturasList.innerHTML = '<p class="empty-state">Você ainda não se candidatou a nenhuma vaga.</p>';
+        candidaturasList.innerHTML = '<p class="estado-vazio">Você ainda não se candidatou a nenhuma vaga.</p>';
         return;
       }
       candidaturasList.innerHTML = candidaturas.map(candidaturaItemHTML).join('');
     }
 
     if (candidaturasList) {
-      candidaturasList.addEventListener('click', function (event) {
-        var botaoRemover = event.target.closest('[data-remove-candidatura]');
+      candidaturasList.addEventListener('click', function (e) {
+        var botaoRemover = e.target.closest('[data-remove-candidatura]');
         if (botaoRemover) {
           var id = botaoRemover.getAttribute('data-remove-candidatura');
-          candidaturas = candidaturas.filter(function (candidatura) { return candidatura.id !== id; });
+          candidaturas = candidaturas.filter(function (c) { return c.id !== id; });
           renderCandidaturas();
           renderCandidatosEmpresa();
         }
       });
     }
-// ok chegamos em mil
+
     var empresaData = { nome: '', cnpj: '', email: '', telefone: '', logo: '', descricao: '' };
     var vagasCriadasPelaEmpresa = [];
+
     if (cadastroForm) {
-      cadastroForm.addEventListener('submit', function (event) {
-        event.preventDefault();
+      cadastroForm.addEventListener('submit', function (e) {
+        e.preventDefault();
         if (!validarCadastro()) return;
 
-        if (getSelectedAccountType() === 'empresa') {
-          empresaData.nome = empresaNomeInput.value.trim();
-          empresaData.cnpj = empresaCnpjInput.value.trim();
-          empresaData.email = empresaEmailInput.value.trim();
-          empresaData.telefone = empresaTelefoneInput.value.trim();
-          empresaData.descricao = empresaDescricaoInput.value.trim();
-          empresaData.logo = (logoUpload && logoUpload.classList.contains('has-image')) ? logoPreview.src : '';
+        if (getCadastroRole() === 'empresa') {
+          empresaData.nome = empNomeInput.value.trim();
+          empresaData.cnpj = empCnpjInput.value.trim();
+          empresaData.email = empEmailInput.value.trim();
+          empresaData.telefone = empTelefoneInput.value.trim();
+          empresaData.descricao = empDescricaoInput.value.trim();
+          empresaData.logo = (logoUpload && logoUpload.classList.contains('com-imagem')) ? logoPreview.src : '';
           renderEmpresaPainel();
           window.location.hash = '#empresa-painel';
         } else {
@@ -1027,9 +1056,10 @@
         }
       });
     }
+
     var empresaNomeExibicao = document.getElementById('empresa-nome-exibicao');
     var empresaDescricaoExibicao = document.getElementById('empresa-descricao-exibicao');
-    var empresaLogoLg = document.getElementById('empresa-logo-large');
+    var empresaLogoLg = document.getElementById('empresa-logo-grande');
     var empresaLogoIniciais = document.getElementById('empresa-logo-iniciais');
     var empresaLogoImg = document.getElementById('empresa-logo-img');
 
@@ -1040,14 +1070,17 @@
       empresaLogoIniciais.textContent = empresaData.nome ? iniciais(empresaData.nome) : 'EM';
       if (empresaData.logo) {
         empresaLogoImg.src = empresaData.logo;
-        empresaLogoLg.classList.add('has-image');
+        empresaLogoLg.classList.add('com-imagem');
       } else {
-        empresaLogoLg.classList.remove('has-image');
+        empresaLogoLg.classList.remove('com-imagem');
       }
       renderMinhasVagas();
       renderCandidatosEmpresa();
     }
-    var vagaCursosGrid = document.getElementById('vaga-cursos-grid');
+
+    var vagaCursosGrid = document.getElementById('vaga-grade-cursos');
+    var vagaCursosErro = document.getElementById('vaga-cursos-erro');
+    var vagaAttrsGrid = document.getElementById('vaga-grade-atributos');
     var criarVagaForm = document.getElementById('criar-vaga-form');
     var vagaTituloInput = document.getElementById('vaga-titulo');
     var vagaDescricaoInput = document.getElementById('vaga-descricao');
@@ -1055,7 +1088,7 @@
     var vagaBairroInput = document.getElementById('vaga-bairro');
     var vagaModalidadeInput = document.getElementById('vaga-modalidade');
     var vagaHorasInput = document.getElementById('vaga-horas');
-    var vagaBolsaToggle = document.getElementById('bolsa-toggle');
+    var vagaBolsaToggle = document.getElementById('bolsa-alternador');
     var vagaBolsaComCampos = document.getElementById('bolsa-com-campos');
     var vagaBolsaSemAviso = document.getElementById('bolsa-sem-aviso');
     var vagaBolsaValorInput = document.getElementById('vaga-bolsa-valor');
@@ -1063,27 +1096,27 @@
     var vagaSupervisorNomeInput = document.getElementById('vaga-supervisor-nome');
     var vagaSupervisorCargoInput = document.getElementById('vaga-supervisor-cargo');
     var vagaSupervisorFormacaoInput = document.getElementById('vaga-supervisor-formacao');
-    var criarVagaSubmitReveal = document.getElementById('criar-vaga-submit-reveal');
-    var criarVagaSubmitButton = document.getElementById('criar-vaga-submit-button');
+    var criarVagaNextWrap = document.getElementById('criar-vaga-avancar-envoltorio');
+    var criarVagaBtn = document.getElementById('criar-vaga-botao');
     var bolsaStatus = 'sim';
 
     if (vagaCursosGrid) {
-      vagaCursosGrid.querySelectorAll('.atributo-chip').forEach(function (chip) {
+      vagaCursosGrid.querySelectorAll('.chip-atributo').forEach(function (chip) {
         chip.addEventListener('click', function () {
-          chip.classList.toggle('is-selected');
+          chip.classList.toggle('selecionado');
           validarCriarVaga();
         });
       });
     }
-// minha cabeça doí
+
     if (vagaBolsaToggle) {
-      vagaBolsaToggle.querySelectorAll('button').forEach(function (button) {
-        button.addEventListener('click', function () {
-          vagaBolsaToggle.querySelectorAll('button').forEach(function (siblingButton) { siblingButton.classList.remove('is-active'); });
-          button.classList.add('is-active');
-          bolsaStatus = button.dataset.bolsa;
-          vagaBolsaComCampos.toggleAttribute('hidden', bolsaStatus !== 'sim');
-          vagaBolsaSemAviso.toggleAttribute('hidden', bolsaStatus !== 'nao');
+      vagaBolsaToggle.querySelectorAll('button').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          vagaBolsaToggle.querySelectorAll('button').forEach(function (b) { b.classList.remove('ativo'); });
+          btn.classList.add('ativo');
+          bolsaStatus = btn.dataset.bolsa;
+          vagaBolsaComCampos.style.display = bolsaStatus === 'sim' ? 'block' : 'none';
+          vagaBolsaSemAviso.style.display = bolsaStatus === 'nao' ? 'block' : 'none';
           validarCriarVaga();
         });
       });
@@ -1091,7 +1124,8 @@
 
     function validarCriarVaga() {
       var tituloOk = vagaTituloInput.value.trim().length >= 3;
-      var cursosOk = vagaCursosGrid && vagaCursosGrid.querySelectorAll('.atributo-chip.is-selected').length > 0;
+      var cursosOk = vagaCursosGrid && vagaCursosGrid.querySelectorAll('.chip-atributo.selecionado').length > 0;
+      if (vagaCursosErro) vagaCursosErro.classList.toggle('visivel', false);
       var descricaoOk = vagaDescricaoInput.value.trim().length >= 10;
       var cidadeOk = vagaCidadeInput.value.trim().length >= 2;
       var bolsaOk = bolsaStatus === 'nao' || (vagaBolsaValorInput.value !== '' && parseInt(vagaBolsaValorInput.value, 10) >= 0);
@@ -1099,16 +1133,16 @@
         vagaSupervisorCargoInput.value.trim().length >= 2 &&
         vagaSupervisorFormacaoInput.value.trim().length >= 3;
 
-      var formularioValido = tituloOk && cursosOk && descricaoOk && cidadeOk && bolsaOk && supervisorOk;
-      criarVagaSubmitReveal.classList.toggle('is-visible', formularioValido);
-      criarVagaSubmitButton.disabled = !formularioValido;
-      return formularioValido;
+      var tudoOk = tituloOk && cursosOk && descricaoOk && cidadeOk && bolsaOk && supervisorOk;
+      criarVagaNextWrap.classList.toggle('visivel', tudoOk);
+      criarVagaBtn.disabled = !tudoOk;
+      return tudoOk;
     }
 
-    if (vagaRequisitosGrid) {
-      vagaRequisitosGrid.querySelectorAll('.atributo-chip').forEach(function (chip) {
+    if (vagaAttrsGrid) {
+      vagaAttrsGrid.querySelectorAll('.chip-atributo').forEach(function (chip) {
         chip.addEventListener('click', function () {
-          chip.classList.toggle('is-selected');
+          chip.classList.toggle('selecionado');
         });
       });
     }
@@ -1118,18 +1152,18 @@
     });
 
     if (criarVagaForm) {
-      criarVagaForm.addEventListener('submit', function (event) {
-        event.preventDefault();
+      criarVagaForm.addEventListener('submit', function (e) {
+        e.preventDefault();
         if (!validarCriarVaga()) return;
 
         var cursosEscolhidos = Array.prototype.map.call(
-          vagaCursosGrid.querySelectorAll('.atributo-chip.is-selected'),
+          vagaCursosGrid.querySelectorAll('.chip-atributo.selecionado'),
           function (chip) { return chip.dataset.curso; }
         );
 
-        var atributosChaves = vagaRequisitosGrid ? Array.prototype.map.call(
-          vagaRequisitosGrid.querySelectorAll('.atributo-chip.is-selected'),
-          function (chip) { return chip.dataset.atributo; }
+        var atributosChaves = vagaAttrsGrid ? Array.prototype.map.call(
+          vagaAttrsGrid.querySelectorAll('.chip-atributo.selecionado'),
+          function (chip) { return chip.dataset.attr; }
         ) : [];
 
         vagasCriadasPelaEmpresa.unshift({
@@ -1148,52 +1182,53 @@
           supervisorCargo: vagaSupervisorCargoInput.value.trim(),
           supervisorFormacao: vagaSupervisorFormacaoInput.value.trim(),
           status: 'Ativa',
-          atributos: atributosChaves.map(function (chaveAtributo) { return rotulosAtributos[chaveAtributo] || chaveAtributo; })
+          atributos: atributosChaves.map(function (a) { return ATTR_LABELS[a] || a; })
         });
-// java parecia mó daora
+
         renderMinhasVagas();
+
         criarVagaForm.reset();
-        vagaCursosGrid.querySelectorAll('.atributo-chip.is-selected').forEach(function (chip) { chip.classList.remove('is-selected'); });
-        if (vagaRequisitosGrid) vagaRequisitosGrid.querySelectorAll('.atributo-chip.is-selected').forEach(function (chip) { chip.classList.remove('is-selected'); });
+        vagaCursosGrid.querySelectorAll('.chip-atributo.selecionado').forEach(function (chip) { chip.classList.remove('selecionado'); });
+        if (vagaAttrsGrid) vagaAttrsGrid.querySelectorAll('.chip-atributo.selecionado').forEach(function (chip) { chip.classList.remove('selecionado'); });
         bolsaStatus = 'sim';
-        vagaBolsaToggle.querySelectorAll('button').forEach(function (bolsaButton) { bolsaButton.classList.toggle('is-active', bolsaButton.dataset.bolsa === 'sim'); });
-        vagaBolsaComCampos.toggleAttribute('hidden', false);
-        vagaBolsaSemAviso.toggleAttribute('hidden', true);
+        vagaBolsaToggle.querySelectorAll('button').forEach(function (b) { b.classList.toggle('ativo', b.dataset.bolsa === 'sim'); });
+        vagaBolsaComCampos.style.display = 'block';
+        vagaBolsaSemAviso.style.display = 'none';
         validarCriarVaga();
-        var abaMinhasVagas = document.querySelector('.tab-button[data-tab="minhas-vagas"]');
+        var abaMinhasVagas = document.querySelector('.botao-aba[data-tab="minhas-vagas"]');
         if (abaMinhasVagas) abaMinhasVagas.click();
       });
     }
 
-    function vagaCriadaItemHTML(vaga) {
-      var chipsAtributos = vaga.atributos.map(function (label) {
-        return '<span class="atributo-tag">' + escapeHtml(label) + '</span>';
+    function vagaCriadaItemHTML(v) {
+      var chipsAtributos = v.atributos.map(function (label) {
+        return '<span class="etiqueta-atributo">' + escapeHtml(label) + '</span>';
       }).join('');
-      var cursosTexto = vaga.cursosAceitos.join(', ');
-      var bolsaTexto = vaga.temBolsa
-        ? 'Bolsa R$ ' + escapeHtml(vaga.bolsaValor) + (vaga.beneficios ? ' + ' + escapeHtml(vaga.beneficios) : '')
+      var cursosTexto = v.cursosAceitos.join(', ');
+      var bolsaTexto = v.temBolsa
+        ? 'Bolsa R$ ' + escapeHtml(v.bolsaValor) + (v.beneficios ? ' + ' + escapeHtml(v.beneficios) : '')
         : 'Estágio sem bolsa conforme art. 12 da Lei 11.788/08';
       return '' +
-        '<article class="vaga-criada-item" data-vaga-criada-id="' + vaga.id + '">' +
-          '<div class="candidato-header">' +
-            '<h3>' + escapeHtml(vaga.titulo) + '</h3>' +
-            '<span class="status-badge aceito">' + escapeHtml(vaga.status) + '</span>' +
+        '<div class="vaga-criada-item">' +
+          '<div class="candidato-cabecalho">' +
+            '<h3>' + escapeHtml(v.titulo) + '</h3>' +
+            '<span class="selo-status aceito">' + escapeHtml(v.status) + '</span>' +
           '</div>' +
-          '<p class="vaga-criada-description">' + escapeHtml(vaga.descricao) + '</p>' +
-          '<ul class="vaga-tags">' +
-            '<li class="info-tag">' + escapeHtml(vaga.cidade) + (vaga.bairro ? ' — ' + escapeHtml(vaga.bairro) : '') + '</li>' +
-            '<li class="info-tag info-tag-sun">' + escapeHtml(vaga.modalidade) + '</li>' +
-            '<li class="info-tag info-tag-sun">' + escapeHtml(vaga.horas) + 'h semanais</li>' +
-            '<li class="info-tag info-tag-sun">' + bolsaTexto + '</li>' +
-          '</ul>' +
-          '<p class="item-meta item-meta-spaced">Cursos aceitos: ' + escapeHtml(cursosTexto) + '</p>' +
-          '<p class="item-meta">Supervisor: ' + escapeHtml(vaga.supervisorNome) + ' — ' + escapeHtml(vaga.supervisorCargo) + ' (' + escapeHtml(vaga.supervisorFormacao) + ')</p>' +
-          (chipsAtributos ? '<div class="vaga-requisitos"><span class="vaga-requisitos-label">Requisitos técnicos:</span>' + chipsAtributos + '</div>' : '') +
-          '<p class="form-field-hint vaga-criada-notice">Esta oportunidade é de estágio conforme Lei 11.788/08. A contratação depende de assinatura de Termo de Compromisso de Estágio (TCE) entre aluno, empresa e instituição de ensino, e de Seguro Contra Acidentes Pessoais pago pela empresa. O OxenteVagas não é contratante.</p>' +
-          '<div class="vaga-criada-footer">' +
-            '<button type="button" class="button button-outline button-small" data-remove-vaga-criada="' + vaga.id + '">Remover vaga</button>' +
+          '<p class="vaga-criada-descricao">' + escapeHtml(v.descricao) + '</p>' +
+          '<div class="vaga-tags">' +
+            '<span class="etiqueta">' + escapeHtml(v.cidade) + (v.bairro ? ' — ' + escapeHtml(v.bairro) : '') + '</span>' +
+            '<span class="etiqueta etiqueta-sol">' + escapeHtml(v.modalidade) + '</span>' +
+            '<span class="etiqueta etiqueta-sol">' + escapeHtml(v.horas) + 'h semanais</span>' +
+            '<span class="etiqueta etiqueta-sol">' + bolsaTexto + '</span>' +
           '</div>' +
-        '</article>';
+          '<p class="curriculo-meta" style="margin-top:10px;">Cursos aceitos: ' + escapeHtml(cursosTexto) + '</p>' +
+          '<p class="curriculo-meta">Supervisor: ' + escapeHtml(v.supervisorNome) + ' — ' + escapeHtml(v.supervisorCargo) + ' (' + escapeHtml(v.supervisorFormacao) + ')</p>' +
+          (chipsAtributos ? '<div class="requisitos-atributos"><span class="requisitos-atributos-rotulo">Requisitos técnicos:</span>' + chipsAtributos + '</div>' : '') +
+          '<p class="campo-dica" style="margin-top:12px;">Esta oportunidade é de estágio conforme Lei 11.788/08. A contratação depende de assinatura de Termo de Compromisso de Estágio (TCE) entre aluno, empresa e instituição de ensino, e de Seguro Contra Acidentes Pessoais pago pela empresa. O OxenteVagas não é contratante.</p>' +
+          '<div class="vaga-criada-rodape">' +
+            '<button type="button" class="botao botao-contorno botao-pequeno" data-remove-vaga-criada="' + v.id + '">Remover vaga</button>' +
+          '</div>' +
+        '</div>';
     }
 
     var minhasVagasLista = document.getElementById('minhas-vagas-lista');
@@ -1201,126 +1236,129 @@
     function renderMinhasVagas() {
       if (!minhasVagasLista) return;
       if (!vagasCriadasPelaEmpresa.length) {
-        minhasVagasLista.innerHTML = '<p class="empty-state">Você ainda não publicou nenhuma vaga. Use a aba "Criar vaga" pra publicar a primeira.</p>';
+        minhasVagasLista.innerHTML = '<p class="estado-vazio">Você ainda não publicou nenhuma vaga. Use a aba "Criar vaga" pra publicar a primeira.</p>';
         return;
       }
       minhasVagasLista.innerHTML = vagasCriadasPelaEmpresa.map(vagaCriadaItemHTML).join('');
     }
 
     if (minhasVagasLista) {
-      minhasVagasLista.addEventListener('click', function (event) {
-        var botaoRemover = event.target.closest('[data-remove-vaga-criada]');
+      minhasVagasLista.addEventListener('click', function (e) {
+        var botaoRemover = e.target.closest('[data-remove-vaga-criada]');
         if (botaoRemover) {
           var id = botaoRemover.getAttribute('data-remove-vaga-criada');
-          vagasCriadasPelaEmpresa = vagasCriadasPelaEmpresa.filter(function (vaga) { return vaga.id !== id; });
+          vagasCriadasPelaEmpresa = vagasCriadasPelaEmpresa.filter(function (v) { return v.id !== id; });
           renderMinhasVagas();
         }
       });
     }
+
     var candidatosEmpresaLista = document.getElementById('candidatos-empresa-lista');
 
-    function ultimosDigitos(valor, quantidade) {
-      var digitos = (valor || '').replace(/\D/g, '');
-      return digitos.slice(-quantidade);
+    function ultimosDigitos(valor, n) {
+      var d = (valor || '').replace(/\D/g, '');
+      return d.slice(-n);
     }
 
-    function candidatoItemHTML(candidatura) {
-      var descricaoCv = candidatura.tipo === 'pdf'
-        ? 'Currículo em PDF: <strong>' + escapeHtml(candidatura.nomeArquivo) + '</strong> · ' + candidatura.tamanho + ' KB'
-        : escapeHtml(candidatura.conteudo);
+    function candidatoItemHTML(c) {
+      var descricaoCv = c.tipo === 'pdf'
+        ? 'Currículo em PDF: <strong>' + escapeHtml(c.nomeArquivo) + '</strong> · ' + c.tamanho + ' KB'
+        : escapeHtml(c.conteudo);
 
-      var matchTexto = (candidatura.matchPct !== null && candidatura.matchPct !== undefined && !isNaN(candidatura.matchPct))
-        ? candidatura.matchPct + '% de compatibilidade'
+      var matchTexto = (c.matchPct !== null && c.matchPct !== undefined && !isNaN(c.matchPct))
+        ? c.matchPct + '% de compatibilidade'
         : 'Compatibilidade não calculada';
 
-      var aprovado = candidatura.status === 'aceito';
+      var aprovado = c.status === 'aceito';
+
       var cpfTexto = aprovado
-        ? escapeHtml(candidatura.candidatoCpf || 'não informado')
-        : 'CPF terminado em ' + (ultimosDigitos(candidatura.candidatoCpf, 4) || '••••');
+        ? escapeHtml(c.candidatoCpf || 'não informado')
+        : 'CPF terminado em ' + (ultimosDigitos(c.candidatoCpf, 4) || '••••');
       var telefoneTexto = aprovado
-        ? escapeHtml(candidatura.candidatoTelefone || 'não informado')
+        ? escapeHtml(c.candidatoTelefone || 'não informado')
         : 'oculto até a aprovação';
 
-      var mensagemBloco = candidatura.mensagem
-        ? '<div class="candidato-curriculo candidato-mensagem"><strong>Mensagem de apresentação:</strong><br>' + escapeHtml(candidatura.mensagem) + '</div>'
+      var mensagemBloco = c.mensagem
+        ? '<div class="candidato-cv" style="margin-top:10px;"><strong>Mensagem de apresentação:</strong><br>' + escapeHtml(c.mensagem) + '</div>'
         : '';
 
       var tceAviso = aprovado
-        ? '<div class="tce-alert">Para efetivar, solicite o <strong>Termo de Compromisso de Estágio (TCE)</strong> à instituição do estudante: <strong>' + escapeHtml(candidatura.candidatoInstituicao) + '</strong>. Sem a assinatura da faculdade, não há estágio válido.<br><button type="button" class="button button-outline button-small tce-alert-action" data-abrir-central="' + candidatura.id + '">Abrir central de formalização</button></div>'
+        ? '<div class="tce-alerta">Para efetivar, solicite o <strong>Termo de Compromisso de Estágio (TCE)</strong> à instituição do estudante: <strong>' + escapeHtml(c.candidatoInstituicao) + '</strong>. Sem a assinatura da faculdade, não há estágio válido.<br><button type="button" class="botao botao-contorno botao-pequeno" style="margin-top:8px;" data-abrir-central="' + c.id + '">Abrir central de formalização</button></div>'
         : '';
 
-      var acoes = candidatura.status === 'pendente'
+      var acoes = c.status === 'pendente'
         ? '<div class="candidato-acoes">' +
-            '<button type="button" class="button button-outline button-small" data-rejeitar-candidato="' + candidatura.id + '">Rejeitar</button>' +
-            '<button type="button" class="button button-sun button-small" data-aceitar-candidato="' + candidatura.id + '">Aceitar</button>' +
+            '<button type="button" class="botao botao-contorno botao-pequeno" data-rejeitar-candidato="' + c.id + '">Rejeitar</button>' +
+            '<button type="button" class="botao botao-sol botao-pequeno" data-aceitar-candidato="' + c.id + '">Aceitar</button>' +
           '</div>'
         : '';
 
       return '' +
-        '<article class="candidato-item" data-candidato-id="' + candidatura.id + '">' +
-          '<div class="candidato-header">' +
+        '<div class="candidato-item">' +
+          '<div class="candidato-cabecalho">' +
             '<div>' +
-              '<h3>' + escapeHtml(candidatura.candidatoNome) + (candidatura.candidatoIdade ? ' · ' + escapeHtml(String(candidatura.candidatoIdade)) + ' anos' : '') + '</h3>' +
-              '<p>Candidatou-se pra: ' + escapeHtml(candidatura.vagaTitulo) + ' — ' + escapeHtml(candidatura.vagaEmpresa) + '</p>' +
-              '<p>' + (candidatura.candidatoCurso ? escapeHtml(candidatura.candidatoCurso) + ' · ' : '') + escapeHtml(candidatura.candidatoInstituicao) + '</p>' +
+              '<h3>' + escapeHtml(c.candidatoNome) + (c.candidatoIdade ? ' · ' + escapeHtml(String(c.candidatoIdade)) + ' anos' : '') + '</h3>' +
+              '<p>Candidatou-se pra: ' + escapeHtml(c.vagaTitulo) + ' — ' + escapeHtml(c.vagaEmpresa) + '</p>' +
+              '<p>' + (c.candidatoCurso ? escapeHtml(c.candidatoCurso) + ' · ' : '') + escapeHtml(c.candidatoInstituicao) + '</p>' +
               '<p>' + cpfTexto + ' · Telefone: ' + telefoneTexto + '</p>' +
             '</div>' +
-            '<span class="match-badge ' + (candidatura.matchPct === 100 ? '' : 'match-badge-partial') + '">' + matchTexto + '</span>' +
+            '<span class="selo-compatibilidade ' + (c.matchPct === 100 ? '' : 'compatibilidade-parcial') + '">' + matchTexto + '</span>' +
           '</div>' +
-          '<div class="candidato-curriculo">' + descricaoCv + '</div>' +
+          '<div class="candidato-cv">' + descricaoCv + '</div>' +
           mensagemBloco +
-          '<div class="item-actions item-actions-spaced">' +
-            '<span class="status-badge ' + candidatura.status + '">' + STATUS_LABEL[candidatura.status] + '</span>' +
+          '<div class="curriculo-acoes" style="margin-top:12px;">' +
+            '<span class="selo-status ' + c.status + '">' + STATUS_LABEL[c.status] + '</span>' +
           '</div>' +
           acoes +
           tceAviso +
-        '</article>';
+        '</div>';
     }
-//  ta acabando
+
     function renderCandidatosEmpresa() {
       if (!candidatosEmpresaLista) return;
       if (!candidaturas.length) {
-        candidatosEmpresaLista.innerHTML = '<p class="empty-state">Nenhuma candidatura recebida ainda.</p>';
+        candidatosEmpresaLista.innerHTML = '<p class="estado-vazio">Nenhuma candidatura recebida ainda.</p>';
         return;
       }
       candidatosEmpresaLista.innerHTML = candidaturas.map(candidatoItemHTML).join('');
     }
+
     var tceModal = document.getElementById('tce-modal');
-    var tceModalCloseButton = document.getElementById('tce-modal-close');
+    var tceModalClose = document.getElementById('tce-modal-fechar');
     var tceModalNome = document.getElementById('tce-modal-nome');
     var tceModalInstituicao = document.getElementById('tce-modal-instituicao');
-    var tceAnexoTceInput = document.getElementById('tce-anexo-tce-input');
-    var tceAnexoSeguroInput = document.getElementById('tce-anexo-seguro-input');
+    var tceAnexoTceInput = document.getElementById('tce-anexo-tce-entrada');
+    var tceAnexoSeguroInput = document.getElementById('tce-anexo-seguro-entrada');
     var tceAnexosStatus = document.getElementById('tce-anexos-status');
     var tceChatMensagens = document.getElementById('tce-chat-mensagens');
     var tceChatTexto = document.getElementById('tce-chat-texto');
-    var tceChatSendButton = document.getElementById('tce-chat-send-button');
-    var tceMinutaDownloadButton = document.getElementById('tce-minuta-download-button');
+    var tceChatEnviarBtn = document.getElementById('tce-chat-enviar-botao');
+    var tceBaixarMinutaBtn = document.getElementById('tce-baixar-minuta-botao');
     var centralFormalizacaoId = null;
     var centralFormalizacaoAutor = 'empresa';
 
     function candidaturaAtualCentral() {
-      return candidaturas.find(function (candidatura) { return candidatura.id === centralFormalizacaoId; });
+      return candidaturas.find(function (c) { return c.id === centralFormalizacaoId; });
     }
 
     function renderCentralFormalizacao() {
-      var candidatura = candidaturaAtualCentral();
-      if (!candidatura) return;
+      var c = candidaturaAtualCentral();
+      if (!c) return;
 
-      tceModalNome.textContent = candidatura.candidatoNome;
-      tceModalInstituicao.textContent = candidatura.candidatoInstituicao;
+      tceModalNome.textContent = c.candidatoNome;
+      tceModalInstituicao.textContent = c.candidatoInstituicao;
 
-      var tceOk = !!candidatura.tceAnexo;
-      var seguroOk = !!candidatura.seguroAnexo;
+      var tceOk = !!c.tceAnexo;
+      var seguroOk = !!c.seguroAnexo;
       tceAnexosStatus.innerHTML =
-        (tceOk ? '✅ TCE anexado: ' + escapeHtml(candidatura.tceAnexo) : '⏳ TCE ainda não anexado') + ' · ' +
-        (seguroOk ? '✅ Seguro anexado: ' + escapeHtml(candidatura.seguroAnexo) : '⏳ Seguro ainda não anexado');
+        (tceOk ? '✅ TCE anexado: ' + escapeHtml(c.tceAnexo) : '⏳ TCE ainda não anexado') + ' · ' +
+        (seguroOk ? '✅ Seguro anexado: ' + escapeHtml(c.seguroAnexo) : '⏳ Seguro ainda não anexado');
 
-      if (!candidatura.chatMensagens || !candidatura.chatMensagens.length) {
+      if (!c.chatMensagens || !c.chatMensagens.length) {
         tceChatMensagens.innerHTML = '<p class="tce-chat-vazio">Nenhuma mensagem ainda. Use este espaço só pra tratar de TCE, seguro e data de início.</p>';
       } else {
-        tceChatMensagens.innerHTML = candidatura.chatMensagens.map(function (mensagem) {
-          return '<div class="tce-msg ' + mensagem.autor + '"><span class="tce-msg-autor">' + (mensagem.autor === 'empresa' ? 'Empresa' : 'Estudante') + ' · ' + mensagem.hora + '</span>' + escapeHtml(mensagem.texto) + '</div>';
+        tceChatMensagens.innerHTML = c.chatMensagens.map(function (m) {
+          return '<div class="tce-msg ' + m.autor + '"><span class="tce-msg-autor">' + (m.autor === 'empresa' ? 'Empresa' : 'Estudante') + ' · ' + m.hora + '</span>' + escapeHtml(m.texto) + '</div>';
         }).join('');
         tceChatMensagens.scrollTop = tceChatMensagens.scrollHeight;
       }
@@ -1332,26 +1370,26 @@
       centralFormalizacaoAutor = autor;
       tceChatTexto.value = '';
       renderCentralFormalizacao();
-      tceModal.classList.add('is-open');
+      tceModal.classList.add('aberto');
     }
 
     function fecharCentralFormalizacao() {
-      if (tceModal) tceModal.classList.remove('is-open');
+      if (tceModal) tceModal.classList.remove('aberto');
     }
 
-    if (tceModalCloseButton) tceModalCloseButton.addEventListener('click', fecharCentralFormalizacao);
+    if (tceModalClose) tceModalClose.addEventListener('click', fecharCentralFormalizacao);
     if (tceModal) {
-      tceModal.addEventListener('click', function (event) {
-        if (event.target === tceModal) fecharCentralFormalizacao();
+      tceModal.addEventListener('click', function (e) {
+        if (e.target === tceModal) fecharCentralFormalizacao();
       });
     }
 
     if (tceAnexoTceInput) {
       tceAnexoTceInput.addEventListener('change', function () {
-        var candidatura = candidaturaAtualCentral();
+        var c = candidaturaAtualCentral();
         var file = tceAnexoTceInput.files && tceAnexoTceInput.files[0];
-        if (!candidatura || !file) return;
-        candidatura.tceAnexo = file.name;
+        if (!c || !file) return;
+        c.tceAnexo = file.name;
         renderCentralFormalizacao();
         renderCandidatosEmpresa();
         renderCandidaturas();
@@ -1359,13 +1397,14 @@
     }
     if (tceAnexoSeguroInput) {
       tceAnexoSeguroInput.addEventListener('change', function () {
-        var candidatura = candidaturaAtualCentral();
+        var c = candidaturaAtualCentral();
         var file = tceAnexoSeguroInput.files && tceAnexoSeguroInput.files[0];
-        if (!candidatura || !file) return;
-        candidatura.seguroAnexo = file.name;
+        if (!c || !file) return;
+        c.seguroAnexo = file.name;
         renderCentralFormalizacao();
       });
     }
+
     function contemDadoPessoalSensivel(texto) {
       var pareceTelefone = /\d{4,5}[\s.-]?\d{4}/.test(texto);
       var pareceEmail = /\S+@\S+\.\S+/.test(texto);
@@ -1373,35 +1412,36 @@
     }
 
     function enviarMensagemChat() {
-      var candidatura = candidaturaAtualCentral();
+      var c = candidaturaAtualCentral();
       var texto = tceChatTexto.value.trim();
-      if (!candidatura || !texto) return;
+      if (!c || !texto) return;
 
-      if (!candidatura.tceAnexo && contemDadoPessoalSensivel(texto)) {
+      if (!c.tceAnexo && contemDadoPessoalSensivel(texto)) {
         tceChatTexto.value = '';
         var aviso = document.getElementById('tce-chat-aviso');
         aviso.textContent = 'Mensagem bloqueada: nada de telefone ou e-mail pessoal antes de anexar o TCE.';
         return;
       }
 
-      if (!candidatura.chatMensagens) candidatura.chatMensagens = [];
+      if (!c.chatMensagens) c.chatMensagens = [];
       var agora = new Date();
       var hora = String(agora.getHours()).padStart(2, '0') + ':' + String(agora.getMinutes()).padStart(2, '0');
-      candidatura.chatMensagens.push({ autor: centralFormalizacaoAutor, texto: texto, hora: hora });
+      c.chatMensagens.push({ autor: centralFormalizacaoAutor, texto: texto, hora: hora });
       tceChatTexto.value = '';
       renderCentralFormalizacao();
     }
-//  admito que sem IA ia ser imposivel pra min
-    if (tceChatSendButton) tceChatSendButton.addEventListener('click', enviarMensagemChat);
+
+    if (tceChatEnviarBtn) tceChatEnviarBtn.addEventListener('click', enviarMensagemChat);
     if (tceChatTexto) {
-      tceChatTexto.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') { event.preventDefault(); enviarMensagemChat(); }
+      tceChatTexto.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); enviarMensagemChat(); }
       });
     }
-    if (tceMinutaDownloadButton) {
-      tceMinutaDownloadButton.addEventListener('click', function () {
-        var candidatura = candidaturaAtualCentral();
-        if (!candidatura) return;
+
+    if (tceBaixarMinutaBtn) {
+      tceBaixarMinutaBtn.addEventListener('click', function () {
+        var c = candidaturaAtualCentral();
+        if (!c) return;
         var janela = window.open('', '_blank');
         if (!janela) return;
         janela.document.write(
@@ -1411,12 +1451,12 @@
           '<h1>Minuta de dados para Termo de Compromisso de Estágio (TCE)</h1>' +
           '<p>Documento gerado automaticamente pelo OxenteVagas apenas como apoio. Não substitui o TCE oficial, que deve ser assinado pelo estudante, pela empresa e pela instituição de ensino.</p>' +
           '<table>' +
-            '<tr><td>Estudante</td><td>' + escapeHtml(candidatura.candidatoNome) + '</td></tr>' +
-            '<tr><td>Instituição de ensino</td><td>' + escapeHtml(candidatura.candidatoInstituicao) + '</td></tr>' +
-            '<tr><td>Curso</td><td>' + escapeHtml(candidatura.candidatoCurso || '-') + '</td></tr>' +
-            '<tr><td>CPF do estudante</td><td>' + escapeHtml(candidatura.candidatoCpf || '-') + '</td></tr>' +
-            '<tr><td>Vaga</td><td>' + escapeHtml(candidatura.vagaTitulo) + '</td></tr>' +
-            '<tr><td>Empresa concedente</td><td>' + escapeHtml(candidatura.vagaEmpresa) + '</td></tr>' +
+            '<tr><td>Estudante</td><td>' + escapeHtml(c.candidatoNome) + '</td></tr>' +
+            '<tr><td>Instituição de ensino</td><td>' + escapeHtml(c.candidatoInstituicao) + '</td></tr>' +
+            '<tr><td>Curso</td><td>' + escapeHtml(c.candidatoCurso || '-') + '</td></tr>' +
+            '<tr><td>CPF do estudante</td><td>' + escapeHtml(c.candidatoCpf || '-') + '</td></tr>' +
+            '<tr><td>Vaga</td><td>' + escapeHtml(c.vagaTitulo) + '</td></tr>' +
+            '<tr><td>Empresa concedente</td><td>' + escapeHtml(c.vagaEmpresa) + '</td></tr>' +
             '<tr><td>Data de geração</td><td>' + new Date().toLocaleDateString('pt-BR') + '</td></tr>' +
           '</table>' +
           '<script>window.onload = function(){ window.print(); };</' + 'script>' +
@@ -1427,10 +1467,10 @@
     }
 
     if (candidatosEmpresaLista) {
-      candidatosEmpresaLista.addEventListener('click', function (event) {
-        var botaoAceitar = event.target.closest('[data-aceitar-candidato]');
-        var botaoRejeitar = event.target.closest('[data-rejeitar-candidato]');
-        var botaoAbrirCentral = event.target.closest('[data-abrir-central]');
+      candidatosEmpresaLista.addEventListener('click', function (e) {
+        var botaoAceitar = e.target.closest('[data-aceitar-candidato]');
+        var botaoRejeitar = e.target.closest('[data-rejeitar-candidato]');
+        var botaoAbrirCentral = e.target.closest('[data-abrir-central]');
 
         if (botaoAbrirCentral) {
           abrirCentralFormalizacao(botaoAbrirCentral.getAttribute('data-abrir-central'), 'empresa');
@@ -1439,19 +1479,20 @@
 
         var id = botaoAceitar ? botaoAceitar.getAttribute('data-aceitar-candidato') : (botaoRejeitar ? botaoRejeitar.getAttribute('data-rejeitar-candidato') : null);
         if (!id) return;
-        var candidaturaDecidida = candidaturas.find(function (candidatura) { return candidatura.id === id; });
-        if (!candidaturaDecidida) return;
-        candidaturaDecidida.status = botaoAceitar ? 'aceito' : 'rejeitado';
-        if (botaoAceitar && !candidaturaDecidida.chatMensagens) candidaturaDecidida.chatMensagens = [];
+        var candidatura = candidaturas.find(function (c) { return c.id === id; });
+        if (!candidatura) return;
+        candidatura.status = botaoAceitar ? 'aceito' : 'rejeitado';
+        if (botaoAceitar && !candidatura.chatMensagens) candidatura.chatMensagens = [];
         renderCandidatosEmpresa();
         renderCandidaturas();
-        if (botaoAceitar) abrirCentralFormalizacao(candidaturaDecidida.id, 'empresa');
+
+        if (botaoAceitar) abrirCentralFormalizacao(candidatura.id, 'empresa');
       });
     }
 
     if (candidaturasList) {
-      candidaturasList.addEventListener('click', function (event) {
-        var botaoAbrirCentral = event.target.closest('[data-abrir-central]');
+      candidaturasList.addEventListener('click', function (e) {
+        var botaoAbrirCentral = e.target.closest('[data-abrir-central]');
         if (botaoAbrirCentral) {
           abrirCentralFormalizacao(botaoAbrirCentral.getAttribute('data-abrir-central'), 'estudante');
         }
@@ -1459,4 +1500,3 @@
     }
   });
 })();
-// ufa cabou
